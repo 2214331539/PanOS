@@ -1,0 +1,108 @@
+/* 定位修复：窗口的定位与尺寸统一相对包含块 .windowLayer（菜单栏与 Dock 之间的安全区），
+   不再混用 100vh，避免窗口下推后压住 / 钻入 Dock。
+   100% = .windowLayer 的高度 = 视口高度 - 菜单栏 - Dock 区域。
+   居中与拖拽：left/top 由 window-store 的 x/y 通过内联 style 提供（不再用 transform 居中，
+   因为 Motion 会覆盖 transform 导致居中失效）。 */
+.frame {
+  position: absolute;
+  display: flex;
+  width: min(880px, calc(100vw - 48px));
+  height: min(620px, calc(100% - 32px));
+  max-height: calc(100% - 24px);
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-window);
+  pointer-events: auto;
+  backdrop-filter: blur(26px);
+}
+
+/* 最大化：用 !important 覆盖内联 left/top，铺满安全区。 */
+.maximized {
+  top: 12px !important;
+  left: 24px !important;
+  width: calc(100vw - 48px);
+  height: calc(100% - 24px);
+  max-height: calc(100% - 24px);
+}
+
+.titlebar {
+  display: grid;
+  min-height: 44px;
+  grid-template-columns: 92px 1fr 92px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding: 0 14px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.titlebar:active {
+  cursor: grabbing;
+}
+
+.titlebar h2 {
+  overflow: hidden;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.control {
+  width: 13px;
+  height: 13px;
+  border: 1px solid rgb(0 0 0 / 12%);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.controlClose {
+  background: #ff5f57;
+}
+
+.controlMinimize {
+  background: #febc2e;
+}
+
+.controlMaximize {
+  background: #28c840;
+}
+
+.content {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+}
+
+@media (max-width: 767px) {
+  /* 移动端：窗口全屏，禁用拖拽定位（!important 覆盖内联 left/top）。 */
+  .frame,
+  .maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .titlebar {
+    cursor: default;
+  }
+
+  .content {
+    padding: 16px;
+  }
+}
