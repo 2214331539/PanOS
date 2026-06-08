@@ -1,0 +1,111 @@
+.reader {
+  display: block;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.back,
+.share {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.back:hover,
+.share:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.cat {
+  border-radius: 999px;
+  background: rgb(37 99 235 / 12%);
+  color: color-mix(in srgb, var(--primary) 88%, var(--text));
+  padding: 2px 9px;
+  font-weight: 700;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.excerpt {
+  margin: 0 0 22px;
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 28px 0;
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pagerItem {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.pagerItem:hover {
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+}
+
+.pagerItem.next {
+  text-align: right;
+}
+
+.pagerLabel {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.loading {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  color: var(--text-muted);
+  font-size: 14px;
+}

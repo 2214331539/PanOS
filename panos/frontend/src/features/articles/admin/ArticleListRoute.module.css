@@ -1,0 +1,82 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.count {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.titleCell {
+  font-weight: 700;
+}
+
+.slug {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+}
+
+.published {
+  background: rgb(16 185 129 / 14%);
+  color: color-mix(in srgb, var(--success) 80%, var(--text));
+}
+
+.draft {
+  background: rgb(245 158 11 / 16%);
+  color: color-mix(in srgb, var(--warning) 78%, var(--text));
+}
+
+.archived {
+  background: rgb(127 127 127 / 16%);
+  color: var(--text-muted);
+}
+
+.edit {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 14px;
+}

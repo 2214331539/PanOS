@@ -13,4 +13,5 @@ test-results/
 .pytest_cache/
 __pycache__/
 *.pyc
+panos/backend/uploads/
 

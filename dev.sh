@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # PanOS 一键本地启动脚本
-# 同时启动 FastAPI 后端（apps/api）与 Vite 前端（apps/web），Ctrl+C 一起退出。
+# 同时启动 FastAPI 后端（panos/backend）与 Vite 前端（panos/frontend），Ctrl+C 一起退出。
 #
 # 用法：
 #   ./dev.sh            启动前端 + 后端
@@ -43,9 +43,15 @@ if [ "$RUN_WEB" -eq 1 ] && [ ! -d "$ROOT/node_modules" ]; then
   echo "▶ 安装前端依赖（pnpm install）..."
   pnpm install
 fi
-if [ "$RUN_API" -eq 1 ] && [ ! -d "$ROOT/apps/api/.venv" ]; then
+if [ "$RUN_API" -eq 1 ] && [ ! -d "$ROOT/panos/backend/.venv" ]; then
   echo "▶ 同步后端依赖（uv sync）..."
-  (cd "$ROOT/apps/api" && uv sync)
+  (cd "$ROOT/panos/backend" && uv sync)
+fi
+
+# ---- 起本地数据库（docker 可用时）----
+if [ "$RUN_API" -eq 1 ] && command -v docker >/dev/null 2>&1; then
+  echo "▶ 启动本地数据库（docker compose up -d）..."
+  docker compose up -d >/dev/null 2>&1 || echo "  (docker compose 启动失败，请确认 Docker 已运行)"
 fi
 
 # ---- 退出时清理所有子进程 ----
@@ -67,12 +73,12 @@ echo "────────────────────────�
 
 # ---- 启动后端 ----
 if [ "$RUN_API" -eq 1 ]; then
-  (cd "$ROOT/apps/api" && uv run uvicorn app.main:app --reload --port "$API_PORT") &
+  (cd "$ROOT/panos/backend" && uv run uvicorn app.main:app --reload --port "$API_PORT") &
 fi
 
 # ---- 启动前端 ----
 if [ "$RUN_WEB" -eq 1 ]; then
-  pnpm --dir "$ROOT/apps/web" run dev --port "$WEB_PORT" &
+  pnpm --dir "$ROOT/panos/frontend" run dev --port "$WEB_PORT" &
 fi
 
 # 等待任一进程退出，随后由 trap 统一清理
