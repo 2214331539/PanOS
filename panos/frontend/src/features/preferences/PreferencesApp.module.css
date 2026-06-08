@@ -1,0 +1,35 @@
+.preferences {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.themeOptions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.themeOption {
+  display: flex;
+  min-height: 74px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 20%);
+  cursor: pointer;
+}
+
+.themeOptionActive {
+  border-color: color-mix(in srgb, var(--primary) 58%, var(--border));
+  background: rgb(37 99 235 / 12%);
+}
+
+@media (max-width: 767px) {
+  .themeOptions {
+    grid-template-columns: 1fr;
+  }
+}

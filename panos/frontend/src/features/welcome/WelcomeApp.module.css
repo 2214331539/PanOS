@@ -1,0 +1,15 @@
+.welcome {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  padding: min(6vw, 42px);
+}
+
+.lead {
+  max-width: 560px;
+  margin: 14px 0 0;
+  color: var(--text-muted);
+  font-size: 18px;
+  line-height: 1.6;
+}

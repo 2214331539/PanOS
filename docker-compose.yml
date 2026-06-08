@@ -1,0 +1,25 @@
+# 本地开发数据库（PostgreSQL 16）。
+# 用法：docker compose up -d   /   docker compose down
+# 完整 Supabase 本地栈对当前阶段过重——本轮只跑 Postgres，
+# 图片走后端本地存储、鉴权走账号密码，未来切 Supabase 时再替换适配器实现。
+services:
+  db:
+    image: postgres:16
+    container_name: panos-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: panos
+    ports:
+      # 宿主 5432/5433 已被其它 Postgres 占用，这里用 5440 避免冲突。
+      - "5440:5432"
+    volumes:
+      - panos-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d panos"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  panos-db-data:

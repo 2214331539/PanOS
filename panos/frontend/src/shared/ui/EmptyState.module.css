@@ -1,0 +1,30 @@
+.emptyState {
+  display: grid;
+  min-height: 280px;
+  place-items: center;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  margin-top: 20px;
+  padding: 28px;
+  text-align: center;
+}
+
+.inline {
+  min-height: 240px;
+}
+
+.emptyState svg {
+  color: var(--primary);
+}
+
+.emptyState h2 {
+  margin: 8px 0 0;
+  font-size: 20px;
+}
+
+.emptyState p {
+  max-width: 440px;
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  line-height: 1.7;
+}

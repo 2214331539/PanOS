@@ -1,2 +1,0 @@
-"""Cross-module service package."""
-

@@ -1,0 +1,61 @@
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.toggleBtn,
+.toggleActive {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+}
+
+.toggleActive {
+  background: rgb(37 99 235 / 12%);
+  color: color-mix(in srgb, var(--primary) 88%, var(--text));
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.timeline {
+  display: grid;
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.monthLabel {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.hint {
+  margin-top: 24px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

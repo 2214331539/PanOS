@@ -1,0 +1,93 @@
+.menuBar {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  padding: 0 14px;
+  backdrop-filter: blur(18px);
+}
+
+.left,
+.right {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand {
+  display: inline-flex;
+  height: 28px;
+  align-items: center;
+  gap: 7px;
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.brand span {
+  color: var(--primary);
+  font-size: 12px;
+}
+
+.active {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clock {
+  min-width: 48px;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: right;
+}
+
+/* Radix Portal 渲染的下拉，仍通过 className 应用此样式 */
+.dropdown {
+  z-index: 1100;
+  min-width: 220px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+  padding: 6px;
+  backdrop-filter: blur(22px);
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 9px 10px;
+}
+
+.dropdownItem[data-highlighted] {
+  background: rgb(37 99 235 / 12%);
+  outline: 0;
+}
+
+@media (max-width: 767px) {
+  .menuBar {
+    height: 44px;
+  }
+
+  .active {
+    display: none;
+  }
+}

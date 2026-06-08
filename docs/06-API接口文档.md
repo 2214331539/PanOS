@@ -304,6 +304,18 @@ V2。
 }
 ```
 
+### `GET /api/categories`
+
+用途：公开分类列表（供 Articles 等左侧分类栏）。
+
+查询参数：
+
+| 参数 | 类型 | 说明 |
+| --- | --- | --- |
+| `module` | string | `articles`、`projects`、`gallery`、`research`，默认 `articles` |
+
+响应项：`{ id, module, name, slug, description, sortOrder }`，仅返回 `is_active=true`，按 `sortOrder` 升序。
+
 ### `GET /api/search`
 
 V2，Spotlight 搜索。
@@ -368,6 +380,24 @@ V2，Spotlight 搜索。
 
 后台接口统一前缀：`/api/admin`。
 
+### `POST /api/admin/login`
+
+用途：管理员账号密码登录（V1 本地鉴权；目标仍 Supabase Auth）。
+
+请求：
+
+```json
+{ "username": "admin", "password": "••••••" }
+```
+
+响应：
+
+```json
+{ "data": { "accessToken": "<jwt>", "expiresAt": "2026-06-09T00:00:00.000Z" } }
+```
+
+说明：后端用 `hmac.compare_digest` 比对 `.env` 的 `ADMIN_USERNAME`/`ADMIN_PASSWORD`，成功后用 `AUTH_SECRET` 签发 HS256 JWT。后续后台接口以 `Authorization: Bearer <jwt>` 调用。失败返回 401 `INVALID_CREDENTIALS`。
+
 ### `GET /api/admin/me`
 
 用途：获取当前管理员。
@@ -422,9 +452,21 @@ V2，Spotlight 搜索。
 
 默认执行归档或软删除。真正硬删除仅 owner 可用，并且必须写入 `audit_logs`。
 
+### `POST /api/admin/media/upload`（V1 本地直传）
+
+用途：本地开发阶段的图片直传（multipart）。编辑器拖入/粘贴图片时调用，返回可直接插入正文的 URL。目标方案仍是下方 Supabase 的 `sign-upload` + `confirm` 两段式。
+
+请求：`multipart/form-data`，字段 `file`（png/jpg/webp/gif，≤ `UPLOAD_MAX_BYTES`）。后端用 Pillow 校验并读取宽高，按 `年/月/hash.ext` 落盘到 `UPLOAD_DIR`，写入 `media_assets`，静态服务于 `/media/*`。
+
+响应：
+
+```json
+{ "data": { "id": "uuid", "url": "http://localhost:8000/media/2026/06/<hash>.png", "width": 1200, "height": 800 } }
+```
+
 ### `POST /api/admin/media/sign-upload`
 
-用途：创建上传签名或服务端上传目标。
+用途：创建上传签名或服务端上传目标（Supabase 两段式，接入 Supabase Storage 后启用）。
 
 请求：
 

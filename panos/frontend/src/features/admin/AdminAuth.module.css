@@ -1,0 +1,79 @@
+/* 后台登录 / Dashboard 空壳的共享样式。 */
+
+.shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  background:
+    linear-gradient(140deg, rgb(14 165 233 / 16%), rgb(16 185 129 / 10%)),
+    var(--bg);
+  padding: 24px;
+}
+
+.panel {
+  width: min(680px, 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+  padding: 32px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.panel h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.panel p {
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--text);
+  color: var(--bg);
+  margin-bottom: 18px;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.form label {
+  display: grid;
+  gap: 6px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.form input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--text);
+  padding: 10px 12px;
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 1.5;
+}

@@ -3,15 +3,19 @@
   "private": true,
   "packageManager": "pnpm@11.5.2",
   "scripts": {
-    "web:dev": "pnpm --dir apps/web dev",
-    "web:build": "pnpm --dir apps/web build",
-    "web:lint": "pnpm --dir apps/web lint",
-    "web:typecheck": "pnpm --dir apps/web typecheck",
-    "web:test": "pnpm --dir apps/web test",
-    "api:dev": "uv run --project apps/api uvicorn app.main:app --reload",
-    "api:lint": "uv run --project apps/api ruff check .",
-    "api:typecheck": "uv run --project apps/api mypy app",
-    "api:test": "uv run --project apps/api pytest"
+    "web:dev": "pnpm --dir panos/frontend dev",
+    "web:build": "pnpm --dir panos/frontend build",
+    "web:lint": "pnpm --dir panos/frontend lint",
+    "web:typecheck": "pnpm --dir panos/frontend typecheck",
+    "web:test": "pnpm --dir panos/frontend test",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "api:migrate": "uv run --directory panos/backend alembic upgrade head",
+    "api:seed": "uv run --directory panos/backend python -m app.db.seed",
+    "api:dev": "uv run --directory panos/backend uvicorn app.main:app --reload",
+    "api:lint": "uv run --directory panos/backend ruff check .",
+    "api:typecheck": "uv run --directory panos/backend mypy app",
+    "api:test": "uv run --directory panos/backend pytest"
   }
 }
 
