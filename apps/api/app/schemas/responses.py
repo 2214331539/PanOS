@@ -1,11 +1,9 @@
-from typing import Any, Generic, TypeVar
+from typing import Any
 
 from pydantic import BaseModel, Field
 
-TData = TypeVar("TData")
 
-
-class DataEnvelope(BaseModel, Generic[TData]):
+class DataEnvelope[TData](BaseModel):
     data: TData
     meta: dict[str, Any] = Field(default_factory=dict)
 

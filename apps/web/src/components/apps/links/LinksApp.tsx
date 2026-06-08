@@ -1,17 +1,19 @@
 import { ExternalLink } from "lucide-react";
 
-import { SOCIAL_LINKS } from "../../../lib/constants/panos-copy";
+import { SOCIAL_LINKS } from "../../../lib/constants/copy";
 import { Button } from "../../ui/button";
+import shell from "../shared/appShell.module.css";
+import styles from "./LinksApp.module.css";
 
 export function LinksApp() {
   return (
-    <section className="links-app">
-      <p className="window-eyebrow">Links</p>
-      <h1>社交账号控制面板</h1>
-      <div className="links-grid">
+    <section>
+      <p className={shell.eyebrow}>Links</p>
+      <h1 className={shell.heading}>社交账号控制面板</h1>
+      <div className={styles.linksGrid}>
         {SOCIAL_LINKS.map((link) => (
-          <article className="link-card" key={link.slug}>
-            <div className="link-card__icon" aria-hidden="true">
+          <article className={styles.linkCard} key={link.slug}>
+            <div className={styles.linkCardIcon} aria-hidden="true">
               {link.platform.slice(0, 1)}
             </div>
             <div>
@@ -25,7 +27,7 @@ export function LinksApp() {
           </article>
         ))}
       </div>
-      <p className="window-note">真实 URL 会由后台 Links 模块维护，前端不会写死社交账号地址。</p>
+      <p className={shell.note}>真实 URL 会由后台 Links 模块维护，前端不会写死社交账号地址。</p>
     </section>
   );
 }

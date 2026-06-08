@@ -17,4 +17,3 @@ async def me(principal: AdminPrincipal = Depends(require_admin_user)) -> DataEnv
             role=principal.role,
         )
     )
-

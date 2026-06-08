@@ -1,14 +1,15 @@
 import { Link, useParams } from "react-router";
 
 import { Button } from "../../components/ui/button";
+import styles from "./DirectRoute.module.css";
 
 export function ArticleRoute() {
   const { slug } = useParams();
 
   return (
-    <main className="direct-route">
-      <section className="direct-route__panel">
-        <p className="direct-route__eyebrow">PanOS Article</p>
+    <main className={styles.shell}>
+      <section className={styles.panel}>
+        <p className={styles.eyebrow}>PanOS Article</p>
         <h1>{slug ?? "Article"}</h1>
         <p>
           文章详情直达路由已经接入。等 Phase 4 的公开 API 完成后，这里会从

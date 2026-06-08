@@ -1,0 +1,12 @@
+.content {
+  z-index: 1300;
+  border-radius: 8px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 12px;
+  padding: 7px 9px;
+}
+
+.arrow {
+  fill: var(--text);
+}

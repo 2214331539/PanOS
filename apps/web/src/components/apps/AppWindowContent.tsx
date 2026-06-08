@@ -1,4 +1,4 @@
-import type { WindowAppId } from "../../lib/constants/dock-apps";
+import type { WindowAppId } from "../../lib/constants/apps";
 import { AboutApp } from "./about/AboutApp";
 import { ArticlesApp } from "./articles/ArticlesApp";
 import { ComingSoonApp } from "./coming-soon/ComingSoonApp";

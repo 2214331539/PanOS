@@ -1,0 +1,35 @@
+.widgets {
+  position: fixed;
+  z-index: 20;
+  top: 64px;
+  right: 22px;
+  display: grid;
+  width: min(260px, calc(100vw - 44px));
+  gap: 12px;
+}
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  box-shadow: 0 8px 26px rgb(15 23 42 / 10%);
+  padding: 14px;
+  backdrop-filter: blur(18px);
+}
+
+.widget h2 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.widget p {
+  margin: 5px 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 1023px) {
+  .widgets {
+    display: none;
+  }
+}

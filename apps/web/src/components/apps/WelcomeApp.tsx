@@ -1,27 +1,29 @@
 import { ArrowRight, Mail, Newspaper } from "lucide-react";
 
-import { PANOS_PROFILE } from "../../lib/constants/panos-copy";
+import { PANOS_PROFILE } from "../../lib/constants/copy";
 import { useWindowStore } from "../../stores/window-store";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import shell from "./shared/appShell.module.css";
+import styles from "./WelcomeApp.module.css";
 
 export function WelcomeApp() {
   const openWindow = useWindowStore((state) => state.openWindow);
   const closeWindow = useWindowStore((state) => state.closeWindow);
 
   return (
-    <section className="welcome-app">
-      <p className="window-eyebrow">Welcome to PanOS</p>
-      <h1>小潘同学的个人操作系统</h1>
-      <p className="welcome-app__lead">I build AI agents, web products, and strange little ideas.</p>
-      <div className="welcome-app__roles">
+    <section className={styles.welcome}>
+      <p className={shell.eyebrow}>Welcome to PanOS</p>
+      <h1 className={shell.heading}>小潘同学的个人操作系统</h1>
+      <p className={styles.lead}>I build AI agents, web products, and strange little ideas.</p>
+      <div className={shell.inlineRow}>
         {PANOS_PROFILE.roles.map((role) => (
           <Badge key={role} tone="blue">
             {role}
           </Badge>
         ))}
       </div>
-      <div className="welcome-app__actions">
+      <div className={shell.actions}>
         <Button
           onClick={() => {
             closeWindow("welcome");

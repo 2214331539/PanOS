@@ -1,0 +1,93 @@
+.about {
+  display: grid;
+  gap: 20px;
+}
+
+.identity {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.avatar {
+  display: grid;
+  width: 88px;
+  height: 88px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: linear-gradient(145deg, #0f766e, #38bdf8 52%, #f59e0b);
+  box-shadow: var(--shadow-soft);
+  color: #fff;
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.identity p {
+  margin: 10px 0 0;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.systemInfo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.systemInfo div {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 28%);
+  padding: 14px;
+}
+
+.systemInfo span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.systemInfo strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 15px;
+}
+
+.focusList h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.focusList ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.focusList li {
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 22%);
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+@media (max-width: 767px) {
+  .identity {
+    grid-template-columns: 1fr;
+  }
+
+  .systemInfo {
+    grid-template-columns: 1fr;
+  }
+
+  .focusList ul {
+    grid-template-columns: 1fr;
+  }
+}

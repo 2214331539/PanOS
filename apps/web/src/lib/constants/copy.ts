@@ -1,3 +1,6 @@
+// 静态文案的唯一来源：个人资料、Widget、分类、社交链接。
+// V1 静态；后续 profile / widgets / categories / links 可由后台数据覆盖。
+
 export const PANOS_PROFILE = {
   name: "潘廷峰",
   englishName: "Pan Daniel",
@@ -67,4 +70,3 @@ export const SOCIAL_LINKS = [
     slug: "email",
   },
 ];
-

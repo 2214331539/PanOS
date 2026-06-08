@@ -1,0 +1,70 @@
+// App 注册表的唯一来源：id、标题、文案、强调色、图标、阶段。
+// Dock 图标映射、accent 等之前分散在 Dock.tsx / dock-apps.ts，现统一在此。
+
+import { Atom, Briefcase, Clock, FileText, Image, Lightbulb, Link, Mail, User } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+import type { AccentKey } from "./theme";
+
+export type AppIconComponent = LucideIcon;
+
+// 先固定 id 列表，派生类型；注册表再按这些类型约束，保证 id 字面量与类型同步。
+export const DOCK_APP_IDS = [
+  "about",
+  "articles",
+  "ideas",
+  "projects",
+  "gallery",
+  "research",
+  "timeline",
+  "links",
+  "contact",
+] as const;
+export const SYSTEM_APP_IDS = ["welcome", "preferences"] as const;
+
+export type DockAppId = (typeof DOCK_APP_IDS)[number];
+export type SystemAppId = (typeof SYSTEM_APP_IDS)[number];
+export type WindowAppId = DockAppId | SystemAppId;
+
+export interface DockAppDefinition {
+  id: DockAppId;
+  title: string;
+  heading: string;
+  label: string;
+  kind: "content";
+  accent: AccentKey;
+  icon: AppIconComponent;
+  stage?: string;
+}
+
+export interface SystemAppDefinition {
+  id: SystemAppId;
+  title: string;
+  heading: string;
+  label: string;
+  kind: "system";
+}
+
+// Dock 中的内容型 App（产品结构，不允许后台随意新增核心 App）。
+export const DOCK_APPS: readonly DockAppDefinition[] = [
+  { id: "about", title: "About", heading: "About This Pan", label: "关于我", kind: "content", accent: "cyan", icon: User },
+  { id: "articles", title: "Articles", heading: "Articles", label: "文章", kind: "content", accent: "blue", icon: FileText },
+  { id: "ideas", title: "Ideas", heading: "Ideas", label: "想法", kind: "content", accent: "amber", icon: Lightbulb, stage: "V2" },
+  { id: "projects", title: "Projects", heading: "Projects", label: "项目", kind: "content", accent: "emerald", icon: Briefcase },
+  { id: "gallery", title: "Gallery", heading: "Gallery", label: "相册", kind: "content", accent: "rose", icon: Image },
+  { id: "research", title: "Research", heading: "Research", label: "研究", kind: "content", accent: "violet", icon: Atom, stage: "V2" },
+  { id: "timeline", title: "Timeline", heading: "Timeline", label: "时间线", kind: "content", accent: "slate", icon: Clock, stage: "V2" },
+  { id: "links", title: "Links", heading: "Links", label: "链接", kind: "content", accent: "lime", icon: Link },
+  { id: "contact", title: "Contact", heading: "Contact", label: "联系", kind: "content", accent: "red", icon: Mail },
+];
+
+// 系统型 App（无 Dock 入口）：欢迎窗口、系统偏好。
+export const SYSTEM_APPS: readonly SystemAppDefinition[] = [
+  { id: "welcome", title: "Welcome to PanOS", heading: "Welcome to PanOS", label: "欢迎", kind: "system" },
+  { id: "preferences", title: "System Preferences", heading: "System Preferences", label: "偏好设置", kind: "system" },
+];
+
+export const WINDOW_TITLES = {
+  ...Object.fromEntries(DOCK_APPS.map((app) => [app.id, app.title])),
+  ...Object.fromEntries(SYSTEM_APPS.map((app) => [app.id, app.title])),
+} as Record<WindowAppId, string>;

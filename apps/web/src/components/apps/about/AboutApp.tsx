@@ -1,33 +1,35 @@
 import { Mail, Newspaper, PanelsTopLeft } from "lucide-react";
 
-import { PANOS_PROFILE } from "../../../lib/constants/panos-copy";
+import { PANOS_PROFILE } from "../../../lib/constants/copy";
 import { useWindowStore } from "../../../stores/window-store";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
+import shell from "../shared/appShell.module.css";
+import styles from "./AboutApp.module.css";
 
 export function AboutApp() {
   const openWindow = useWindowStore((state) => state.openWindow);
 
   return (
-    <section className="about-app">
-      <div className="about-app__identity">
-        <div className="about-app__avatar" aria-hidden="true">
+    <section className={styles.about}>
+      <div className={styles.identity}>
+        <div className={styles.avatar} aria-hidden="true">
           P
         </div>
         <div>
-          <p className="window-eyebrow">Model Name</p>
-          <h1>{PANOS_PROFILE.englishName}</h1>
+          <p className={shell.eyebrow}>Model Name</p>
+          <h1 className={shell.heading}>{PANOS_PROFILE.englishName}</h1>
           <p>{PANOS_PROFILE.intro}</p>
         </div>
       </div>
 
-      <div className="about-app__roles">
+      <div className={shell.inlineRow}>
         {PANOS_PROFILE.roles.map((role) => (
           <Badge key={role}>{role}</Badge>
         ))}
       </div>
 
-      <div className="system-info">
+      <div className={styles.systemInfo}>
         <div>
           <span>Chip</span>
           <strong>AI / Product / Web</strong>
@@ -46,7 +48,7 @@ export function AboutApp() {
         </div>
       </div>
 
-      <div className="focus-list">
+      <div className={styles.focusList}>
         <h2>Current Focus</h2>
         <ul>
           {PANOS_PROFILE.focus.map((item) => (
@@ -55,7 +57,7 @@ export function AboutApp() {
         </ul>
       </div>
 
-      <div className="app-actions">
+      <div className={shell.actions}>
         <Button onClick={() => openWindow("projects")}>
           <PanelsTopLeft size={16} />
           View Projects

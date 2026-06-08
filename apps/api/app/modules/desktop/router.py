@@ -13,4 +13,3 @@ async def bootstrap(response: Response) -> DataEnvelope[DesktopBootstrapSchema]:
     data = get_desktop_bootstrap()
     apply_public_cache(response, data.model_dump_json())
     return DataEnvelope(data=data)
-

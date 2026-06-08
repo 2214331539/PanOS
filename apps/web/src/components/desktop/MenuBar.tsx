@@ -2,12 +2,13 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Info, Mail, Monitor, RotateCcw, Search, Settings, SunMedium } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { WINDOW_TITLES } from "../../lib/constants/dock-apps";
+import { WINDOW_TITLES } from "../../lib/constants/apps";
 import { useSpotlightStore } from "../../stores/spotlight-store";
 import { useThemeStore } from "../../stores/theme-store";
 import { useWindowStore } from "../../stores/window-store";
 import { IconButton } from "../ui/button";
 import { Tooltip } from "../ui/tooltip";
+import styles from "./MenuBar.module.css";
 
 function formatClock(date: Date) {
   return date.toLocaleTimeString("zh-CN", {
@@ -31,44 +32,44 @@ export function MenuBar() {
   }, []);
 
   return (
-    <header className="menu-bar">
-      <div className="menu-bar__left">
+    <header className={styles.menuBar}>
+      <div className={styles.left}>
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="menu-bar__brand">
+          <DropdownMenu.Trigger className={styles.brand}>
             <span aria-hidden="true">◆</span>
             PanOS
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="menu-dropdown" align="start" sideOffset={8}>
-              <DropdownMenu.Item className="menu-dropdown__item" onSelect={() => openWindow("about")}>
+            <DropdownMenu.Content className={styles.dropdown} align="start" sideOffset={8}>
+              <DropdownMenu.Item className={styles.dropdownItem} onSelect={() => openWindow("about")}>
                 <Info size={15} />
                 About PanOS
               </DropdownMenu.Item>
               <DropdownMenu.Item
-                className="menu-dropdown__item"
+                className={styles.dropdownItem}
                 onSelect={() => openWindow("preferences")}
               >
                 <Settings size={15} />
                 System Preferences
               </DropdownMenu.Item>
               <DropdownMenu.Item
-                className="menu-dropdown__item"
+                className={styles.dropdownItem}
                 onSelect={() => openWindow("contact")}
               >
                 <Mail size={15} />
                 Contact Me
               </DropdownMenu.Item>
-              <DropdownMenu.Item className="menu-dropdown__item" onSelect={restartIntro}>
+              <DropdownMenu.Item className={styles.dropdownItem} onSelect={restartIntro}>
                 <RotateCcw size={15} />
                 Restart Intro
               </DropdownMenu.Item>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
-        <span className="menu-bar__active">{activeWindowId ? WINDOW_TITLES[activeWindowId] : "Desktop"}</span>
+        <span className={styles.active}>{activeWindowId ? WINDOW_TITLES[activeWindowId] : "Desktop"}</span>
       </div>
 
-      <div className="menu-bar__right">
+      <div className={styles.right}>
         <Tooltip label="Open Spotlight">
           <IconButton label="Open Spotlight" onClick={openSpotlight}>
             <Search size={16} />
@@ -79,7 +80,7 @@ export function MenuBar() {
             {mode === "system" ? <Monitor size={16} /> : <SunMedium size={16} />}
           </IconButton>
         </Tooltip>
-        <time className="menu-bar__clock">{clock}</time>
+        <time className={styles.clock}>{clock}</time>
       </div>
     </header>
   );

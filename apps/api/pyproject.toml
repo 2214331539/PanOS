@@ -33,6 +33,10 @@ line-length = 100
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
 
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI 依赖注入惯用法：Depends/Query/Path 等作为默认值是有意为之，不算 B008。
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Path", "fastapi.Body"]
+
 [tool.mypy]
 python_version = "3.12"
 plugins = ["pydantic.mypy", "sqlalchemy.ext.mypy.plugin"]
@@ -43,4 +47,5 @@ show_error_codes = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+pythonpath = ["."]
 

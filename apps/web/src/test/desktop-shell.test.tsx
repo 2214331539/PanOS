@@ -2,10 +2,15 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { DesktopShell } from "../components/desktop/DesktopShell";
+import { TooltipProvider } from "../components/ui/tooltip";
 
 describe("DesktopShell", () => {
   it("renders the PanOS desktop and dock", () => {
-    render(<DesktopShell />);
+    render(
+      <TooltipProvider>
+        <DesktopShell />
+      </TooltipProvider>,
+    );
 
     expect(screen.getByLabelText("PanOS desktop")).toBeInTheDocument();
     expect(screen.getByLabelText("PanOS Dock")).toBeInTheDocument();

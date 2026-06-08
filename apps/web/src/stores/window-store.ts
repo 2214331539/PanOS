@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
-import type { WindowAppId } from "../lib/constants/dock-apps";
-import { WINDOW_TITLES } from "../lib/constants/dock-apps";
+import type { WindowAppId } from "../lib/constants/apps";
+import { WINDOW_TITLES } from "../lib/constants/apps";
 
 export interface PanosWindow {
   id: WindowAppId;
@@ -13,7 +13,7 @@ export interface PanosWindow {
 }
 
 interface WindowStore {
-  windows: Record<WindowAppId, PanosWindow | undefined>;
+  windows: Partial<Record<WindowAppId, PanosWindow>>;
   activeWindowId: WindowAppId | null;
   nextZIndex: number;
   openWindow: (id: WindowAppId) => void;

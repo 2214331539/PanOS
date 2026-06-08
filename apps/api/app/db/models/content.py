@@ -2,12 +2,31 @@ from datetime import date, datetime
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import Boolean, Date, DateTime, Enum, ForeignKey, Integer, String, Text, UniqueConstraint, func
-from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID as PG_UUID
+from sqlalchemy import (
+    Boolean,
+    Date,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+)
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.models.base import Base, TimestampMixin, UuidPrimaryKeyMixin
-from app.db.models.enums import AdminRole, ContactStatus, ContentStatus, MediaType, ProjectStatus, Visibility
+from app.db.models.enums import (
+    AdminRole,
+    ContactStatus,
+    ContentStatus,
+    MediaType,
+    ProjectStatus,
+    Visibility,
+)
 
 
 class AdminUser(Base, TimestampMixin):

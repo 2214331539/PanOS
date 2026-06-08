@@ -1,23 +1,8 @@
-import { Atom, Briefcase, Clock, FileText, Image, Lightbulb, Link, Mail, User } from "lucide-react";
-import type { ComponentType, SVGProps } from "react";
-
-import { DOCK_APPS, type DockAppId } from "../../lib/constants/dock-apps";
+import { DOCK_APPS } from "../../lib/constants/apps";
 import { useWindowStore } from "../../stores/window-store";
+import { AppIcon } from "../ui/AppIcon";
 import { Tooltip } from "../ui/tooltip";
-
-type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
-
-const APP_ICONS: Record<DockAppId, IconComponent> = {
-  about: User,
-  articles: FileText,
-  ideas: Lightbulb,
-  projects: Briefcase,
-  gallery: Image,
-  research: Atom,
-  timeline: Clock,
-  links: Link,
-  contact: Mail,
-};
+import styles from "./Dock.module.css";
 
 export function Dock() {
   const windows = useWindowStore((state) => state.windows);
@@ -25,25 +10,25 @@ export function Dock() {
   const focusWindow = useWindowStore((state) => state.focusWindow);
 
   return (
-    <nav className="dock" aria-label="PanOS Dock">
+    <nav className={styles.dock} aria-label="PanOS Dock">
       {DOCK_APPS.map((app) => {
-        const Icon = APP_ICONS[app.id];
+        const Icon = app.icon;
         const windowState = windows[app.id];
         const isOpen = Boolean(windowState?.isOpen);
 
         return (
           <Tooltip key={app.id} label={`${app.title}${app.stage ? ` · ${app.stage}` : ""}`}>
             <button
-              className="dock__item"
+              className={styles.item}
               type="button"
               aria-label={`Open ${app.title}`}
               onClick={() => (isOpen ? focusWindow(app.id) : openWindow(app.id))}
             >
-              <span className={`dock__icon app-icon app-icon--${app.accent}`}>
+              <AppIcon accent={app.accent} className={styles.icon}>
                 <Icon aria-hidden="true" size={25} strokeWidth={2.2} />
-              </span>
-              <span className="dock__label">{app.title}</span>
-              {isOpen ? <span className="dock__dot" aria-hidden="true" /> : null}
+              </AppIcon>
+              <span className={styles.label}>{app.title}</span>
+              {isOpen ? <span className={styles.dot} aria-hidden="true" /> : null}
             </button>
           </Tooltip>
         );
@@ -51,4 +36,3 @@ export function Dock() {
     </nav>
   );
 }
-

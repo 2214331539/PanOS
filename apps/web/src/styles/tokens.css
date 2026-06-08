@@ -1,0 +1,40 @@
+/* 设计 token 的唯一来源：主题色板、阴影、字体族。
+   颜色值对应 docs/03-UI视觉与交互规范.md 的浅色 / 深色色板。
+   App 图标的强调色渐变在 lib/constants/theme.ts（随组件内联），不在此处。 */
+
+:root {
+  color-scheme: light;
+  --bg: #f5f7fb;
+  --text: #111827;
+  --text-muted: #667085;
+  --surface: rgb(255 255 255 / 72%);
+  --surface-strong: rgb(255 255 255 / 88%);
+  --border: rgb(17 24 39 / 10%);
+  --primary: #2563eb;
+  --secondary: #7c3aed;
+  --accent: #0ea5e9;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #f43f5e;
+  --shadow-window: 0 24px 80px rgb(15 23 42 / 24%);
+  --shadow-soft: 0 16px 40px rgb(15 23 42 / 14%);
+  font-family: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b1020;
+  --text: #f9fafb;
+  --text-muted: #9ca3af;
+  --surface: rgb(255 255 255 / 8%);
+  --surface-strong: rgb(15 23 42 / 82%);
+  --border: rgb(255 255 255 / 16%);
+  --primary: #38bdf8;
+  --secondary: #a78bfa;
+  --accent: #22d3ee;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #fb7185;
+  --shadow-window: 0 24px 90px rgb(0 0 0 / 44%);
+  --shadow-soft: 0 18px 48px rgb(0 0 0 / 28%);
+}

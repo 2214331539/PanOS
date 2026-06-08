@@ -1,14 +1,25 @@
 import type { ReactNode } from "react";
 
 import { cn } from "../../lib/utils/classnames";
+import styles from "./badge.module.css";
+
+type BadgeTone = "neutral" | "blue" | "green" | "amber" | "red";
+
+// 仅 blue / amber 有专属样式，其余 tone 回落到基础 badge。
+const TONE_CLASS: Record<BadgeTone, string | undefined> = {
+  neutral: undefined,
+  blue: styles.blue,
+  green: undefined,
+  amber: styles.amber,
+  red: undefined,
+};
 
 export function Badge({
   children,
   tone = "neutral",
 }: {
   children: ReactNode;
-  tone?: "neutral" | "blue" | "green" | "amber" | "red";
+  tone?: BadgeTone;
 }) {
-  return <span className={cn("badge", `badge--${tone}`)}>{children}</span>;
+  return <span className={cn(styles.badge, TONE_CLASS[tone])}>{children}</span>;
 }
-

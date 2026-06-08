@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { PanosWindow } from "../../stores/window-store";
 import { useWindowStore } from "../../stores/window-store";
 import { Tooltip } from "../ui/tooltip";
+import styles from "./WindowFrame.module.css";
 
 export function WindowFrame({
   children,
@@ -19,7 +20,7 @@ export function WindowFrame({
 
   return (
     <motion.article
-      className={windowState.isMaximized ? "window-frame window-frame--maximized" : "window-frame"}
+      className={windowState.isMaximized ? `${styles.frame} ${styles.maximized}` : styles.frame}
       style={{ zIndex: windowState.zIndex }}
       initial={{ opacity: 0, scale: 0.96, y: 16 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -28,11 +29,11 @@ export function WindowFrame({
       onMouseDown={() => focusWindow(windowState.id)}
       aria-label={windowState.title}
     >
-      <header className="window-frame__titlebar">
-        <div className="window-frame__controls">
+      <header className={styles.titlebar}>
+        <div className={styles.controls}>
           <Tooltip label="Close">
             <button
-              className="window-control window-control--close"
+              className={`${styles.control} ${styles.controlClose}`}
               type="button"
               aria-label={`Close ${windowState.title}`}
               onClick={() => closeWindow(windowState.id)}
@@ -40,7 +41,7 @@ export function WindowFrame({
           </Tooltip>
           <Tooltip label="Minimize">
             <button
-              className="window-control window-control--minimize"
+              className={`${styles.control} ${styles.controlMinimize}`}
               type="button"
               aria-label={`Minimize ${windowState.title}`}
               onClick={() => minimizeWindow(windowState.id)}
@@ -48,7 +49,7 @@ export function WindowFrame({
           </Tooltip>
           <Tooltip label="Maximize">
             <button
-              className="window-control window-control--maximize"
+              className={`${styles.control} ${styles.controlMaximize}`}
               type="button"
               aria-label={`Maximize ${windowState.title}`}
               onClick={() => toggleMaximize(windowState.id)}
@@ -57,7 +58,7 @@ export function WindowFrame({
         </div>
         <h2>{windowState.title}</h2>
       </header>
-      <div className="window-frame__content">{children}</div>
+      <div className={styles.content}>{children}</div>
     </motion.article>
   );
 }

@@ -6,6 +6,8 @@ import { z } from "zod";
 
 import { submitContact } from "../../../lib/api/client";
 import { Button } from "../../ui/button";
+import shell from "../shared/appShell.module.css";
+import styles from "./ContactApp.module.css";
 
 const contactSchema = z.object({
   name: z.string().min(1, "请输入姓名").max(80, "姓名最多 80 字"),
@@ -44,11 +46,11 @@ export function ContactApp() {
   });
 
   return (
-    <section className="contact-app">
-      <p className="window-eyebrow">Contact</p>
-      <h1>研究交流、项目合作和内容共创</h1>
+    <section className={styles.contact}>
+      <p className={shell.eyebrow}>Contact</p>
+      <h1 className={shell.heading}>研究交流、项目合作和内容共创</h1>
       <p>留言会通过 FastAPI 的 <code>/api/contact</code> 写入，不会从前端直连数据库。</p>
-      <form className="contact-form" onSubmit={onSubmit}>
+      <form className={styles.form} onSubmit={(event) => void onSubmit(event)}>
         <label>
           姓名
           <input {...register("name")} autoComplete="name" />
@@ -64,16 +66,16 @@ export function ContactApp() {
           <input {...register("topic")} />
           {errors.topic ? <span>{errors.topic.message}</span> : null}
         </label>
-        <label className="contact-form__message">
+        <label className={styles.fullRow}>
           内容
           <textarea {...register("message")} rows={5} />
           {errors.message ? <span>{errors.message.message}</span> : null}
         </label>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" className={styles.fullRow} disabled={isSubmitting}>
           <Send size={16} />
           {isSubmitting ? "Sending" : "Send Message"}
         </Button>
-        {status ? <p className="contact-form__status">{status}</p> : null}
+        {status ? <p className={styles.status}>{status}</p> : null}
       </form>
     </section>
   );

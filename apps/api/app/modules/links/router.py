@@ -13,4 +13,3 @@ async def links(response: Response) -> DataEnvelope[list[PublicLinkSchema]]:
     data = list_public_links()
     apply_public_cache(response, "links:empty")
     return DataEnvelope(data=data)
-

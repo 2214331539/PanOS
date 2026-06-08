@@ -2,9 +2,21 @@ import { Slot } from "@radix-ui/react-slot";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cn } from "../../lib/utils/classnames";
+import styles from "./button.module.css";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
 type ButtonSize = "sm" | "md";
+
+const VARIANT_CLASS: Record<ButtonVariant, string> = {
+  primary: styles.primary,
+  secondary: styles.secondary,
+  ghost: styles.ghost,
+};
+
+const SIZE_CLASS: Record<ButtonSize, string | undefined> = {
+  sm: styles.sm,
+  md: undefined,
+};
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
@@ -24,7 +36,7 @@ export function Button({
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
-      className={cn("button", `button--${variant}`, `button--${size}`, className)}
+      className={cn(styles.button, VARIANT_CLASS[variant], SIZE_CLASS[size], className)}
       {...props}
     >
       {children}
@@ -39,9 +51,8 @@ interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export function IconButton({ label, children, className, ...props }: IconButtonProps) {
   return (
-    <button className={cn("icon-button", className)} aria-label={label} {...props}>
+    <button className={cn(styles.iconButton, className)} aria-label={label} {...props}>
       {children}
     </button>
   );
 }
-

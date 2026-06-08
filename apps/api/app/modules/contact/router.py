@@ -11,4 +11,3 @@ router = APIRouter(prefix="/contact", tags=["contact"])
 async def create_contact(payload: ContactCreate) -> DataEnvelope[ContactCreated]:
     data = await submit_contact_message(payload)
     return DataEnvelope(data=data)
-

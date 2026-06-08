@@ -1,0 +1,44 @@
+.linksGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.linkCard {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 28%);
+  padding: 14px;
+}
+
+.linkCard h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.linkCard p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.linkCardIcon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 900;
+}
+
+@media (max-width: 767px) {
+  .linksGrid {
+    grid-template-columns: 1fr;
+  }
+}

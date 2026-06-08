@@ -14,8 +14,8 @@
 5. 所有页面必须符合 UI 规范。视觉、布局、动效、响应式和组件状态必须符合 [03-UI视觉与交互规范.md](/Users/admin/Research/PanOS/docs/03-UI视觉与交互规范.md)。
 6. 每次开发前先阅读 docs 目录。至少阅读与当前任务相关的产品、页面、UI、架构、数据库、API 文档。
 7. 每个功能开发完成后必须更新对应文档。如果实现细节和文档不同，优先修正文档和代码保持一致。
-8. 前端组件必须放在指定目录。桌面组件放 `apps/web/src/components/desktop`，App 组件放 `apps/web/src/components/apps`，基础 UI 放 `apps/web/src/components/ui`，后台组件放 `apps/web/src/components/admin`。
-9. 后端接口必须按模块拆分。FastAPI 路由放 `apps/api/app/api/routes`，业务逻辑放 `apps/api/app/modules/[module]`，不得把复杂业务直接堆在 router 文件里。
+8. 前端组件必须放在指定目录。桌面组件放 `apps/web/src/components/desktop`，App 组件放 `apps/web/src/components/apps`，基础 UI 放 `apps/web/src/components/ui`，后台组件放 `apps/web/src/components/admin`。组件样式必须用就近的 CSS Modules（`X.module.css`），不得回到全局 `globals.css` 写组件样式。
+9. 后端接口必须按模块拆分。FastAPI 路由放各 module 的 `router.py`，由 `apps/api/app/api/router.py` 统一聚合；业务逻辑放 `apps/api/app/modules/[module]`，不得把复杂业务直接堆在 router 文件里。
 10. 不允许把临时测试代码混入正式代码。临时 mock、console、测试页面、调试按钮不得进入生产路径。
 
 ## 开发前检查清单
@@ -38,27 +38,26 @@
 apps/
   web/
     src/
-      routes/
+      routes/                # 路由组件 + 就近 *.module.css
       components/
-        desktop/
+        desktop/             # 组件 + 同名 X.module.css
         apps/
-        ui/
+          shared/            # appShell.module.css（跨 App 复用原语）
+        ui/                  # Button/Badge/Tooltip/AppIcon + *.module.css
         admin/
         content/
       lib/
         api/
-        constants/
+        constants/           # apps.ts / copy.ts / assets.ts / theme.ts（配置与资源唯一来源）
         hooks/
         utils/
       stores/
-      styles/
+      styles/                # tokens.css + globals.css（仅 reset）
   api/
     app/
       api/
-        routes/
-          public/
-          admin/
-      modules/
+        router.py            # 仅聚合各 module router
+      modules/               # 每个模块自带 router.py/service.py/repository.py/schemas.py
         auth/
         articles/
         projects/
@@ -69,7 +68,6 @@ apps/
         models/
         migrations/
       schemas/
-      services/
 ```
 
 规则：
@@ -79,7 +77,10 @@ apps/
 - `apps/web/src/components/apps` 按 App 建目录，如 `articles`、`projects`。
 - `apps/web/src/components/admin` 只放后台组件。
 - `apps/web/src/lib/api` 只放 API client 和 TanStack Query hooks，不写业务规则。
+- `apps/web/src/lib/constants` 是图片资源与可视配置（App 注册表、文案、壁纸、accent 渐变）的唯一来源，不得在 CSS 或组件里硬编码图片地址或颜色。
+- 组件样式必须用就近的 `*.module.css`（CSS Modules）；设计 token 集中在 `styles/tokens.css`，组件只引用 CSS 变量。
 - `apps/api/app/modules` 中每个模块必须有清晰的 `router.py`、`service.py`、`repository.py`、`schemas.py` 拆分。
+- FastAPI 路由由各 module 的 `router.py` 暴露，`apps/api/app/api/router.py` 仅做聚合，不写业务逻辑。
 - SQLAlchemy session 只能从统一封装导入。
 - Supabase service role 只能在 FastAPI 后端使用。
 

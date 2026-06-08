@@ -1,10 +1,12 @@
 import { Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { DOCK_APPS } from "../../lib/constants/dock-apps";
+import { DOCK_APPS } from "../../lib/constants/apps";
 import { useSpotlightStore } from "../../stores/spotlight-store";
 import { useWindowStore } from "../../stores/window-store";
+import { AppIcon } from "../ui/AppIcon";
 import { IconButton } from "../ui/button";
+import styles from "./Spotlight.module.css";
 
 export function Spotlight() {
   const [query, setQuery] = useState("");
@@ -31,10 +33,10 @@ export function Spotlight() {
   }
 
   return (
-    <div className="spotlight" role="dialog" aria-modal="true" aria-label="Spotlight search">
-      <button className="spotlight__backdrop" type="button" aria-label="Close Spotlight" onClick={close} />
-      <section className="spotlight__panel">
-        <div className="spotlight__input-row">
+    <div className={styles.spotlight} role="dialog" aria-modal="true" aria-label="Spotlight search">
+      <button className={styles.backdrop} type="button" aria-label="Close Spotlight" onClick={close} />
+      <section className={styles.panel}>
+        <div className={styles.inputRow}>
           <Search size={20} aria-hidden="true" />
           <input
             autoFocus
@@ -46,7 +48,7 @@ export function Spotlight() {
             <X size={16} />
           </IconButton>
         </div>
-        <div className="spotlight__results">
+        <div className={styles.results}>
           {results.length > 0 ? (
             results.map((app) => (
               <button
@@ -57,7 +59,7 @@ export function Spotlight() {
                   close();
                 }}
               >
-                <span className={`app-icon app-icon--${app.accent}`} />
+                <AppIcon accent={app.accent} size="sm" />
                 <span>
                   <strong>{app.title}</strong>
                   <small>{app.stage ? `${app.label} · ${app.stage}` : app.label}</small>
@@ -65,7 +67,7 @@ export function Spotlight() {
               </button>
             ))
           ) : (
-            <p className="spotlight__empty">没有找到匹配内容。换个关键词试试。</p>
+            <p className={styles.empty}>没有找到匹配内容。换个关键词试试。</p>
           )}
         </div>
       </section>

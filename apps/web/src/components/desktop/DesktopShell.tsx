@@ -1,11 +1,17 @@
 import { AnimatePresence } from "motion/react";
 import { useEffect } from "react";
 
+import type { CSSProperties } from "react";
+
 import { AppWindowContent } from "../apps/AppWindowContent";
-import { DOCK_APPS } from "../../lib/constants/dock-apps";
+import { DOCK_APPS } from "../../lib/constants/apps";
+import { ASSETS } from "../../lib/constants/assets";
 import { applyTheme, useThemeStore } from "../../stores/theme-store";
+import type { PanosWindow } from "../../stores/window-store";
 import { useWindowStore } from "../../stores/window-store";
 import { useSpotlightStore } from "../../stores/spotlight-store";
+import { AppIcon } from "../ui/AppIcon";
+import styles from "./DesktopShell.module.css";
 import { Dock } from "./Dock";
 import { MenuBar } from "./MenuBar";
 import { Spotlight } from "./Spotlight";
@@ -40,31 +46,37 @@ export function DesktopShell() {
   }, [closeSpotlight, openSpotlight]);
 
   const visibleWindows = Object.values(windows)
-    .filter((windowState) => windowState?.isOpen && !windowState.isMinimized)
+    .filter((windowState): windowState is PanosWindow =>
+      Boolean(windowState?.isOpen) && !windowState.isMinimized,
+    )
     .sort((left, right) => left.zIndex - right.zIndex);
 
+  const shellStyle = {
+    "--panos-wallpaper": `url("${ASSETS.wallpaper.url}")`,
+  } as CSSProperties;
+
   return (
-    <main className="desktop-shell" aria-label="PanOS desktop">
-      <div className="desktop-wallpaper" aria-hidden="true" />
+    <main className={styles.desktopShell} aria-label="PanOS desktop" style={shellStyle}>
+      <div className={styles.wallpaper} aria-hidden="true" />
       <MenuBar />
       <Widgets />
 
-      <section className="mobile-home" aria-label="PanOS apps">
-        <div className="mobile-home__hero">
+      <section className={styles.mobileHome} aria-label="PanOS apps">
+        <div className={styles.mobileHomeHero}>
           <p>Welcome to PanOS</p>
           <h1>小潘同学的个人操作系统</h1>
         </div>
-        <div className="mobile-home__grid">
+        <div className={styles.mobileHomeGrid}>
           {DOCK_APPS.map((app) => (
             <button key={app.id} type="button" onClick={() => openWindow(app.id)}>
-              <span className={`app-icon app-icon--${app.accent}`} />
+              <AppIcon accent={app.accent} />
               <span>{app.title}</span>
             </button>
           ))}
         </div>
       </section>
 
-      <section className="window-layer" aria-label="Open PanOS windows">
+      <section className={styles.windowLayer} aria-label="Open PanOS windows">
         <AnimatePresence>
           {visibleWindows.map((windowState) => (
             <WindowFrame key={windowState.id} windowState={windowState}>
