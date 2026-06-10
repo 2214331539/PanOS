@@ -62,7 +62,24 @@
   background: var(--text);
 }
 
+/* 未上线的 App 直接在图标上标出阶段，点击前就能形成预期（tooltip 只在 hover 才可见）。 */
+.stage {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-strong);
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 3px 5px;
+  pointer-events: none;
+}
+
 @media (max-width: 767px) {
+  /* 移动端 Dock 横向滚动，保证所有 App 可达；项数少时仍居中（首末项 margin auto）。 */
   .dock {
     right: 12px;
     bottom: 12px;
@@ -71,14 +88,23 @@
     gap: 2px;
     overflow-x: auto;
     justify-content: flex-start;
+    scrollbar-width: none;
+  }
+
+  .dock::-webkit-scrollbar {
+    display: none;
   }
 
   .item {
     flex: 0 0 54px;
   }
 
-  .item:nth-child(n + 6) {
-    display: none;
+  .item:first-child {
+    margin-inline-start: auto;
+  }
+
+  .item:last-child {
+    margin-inline-end: auto;
   }
 }
 

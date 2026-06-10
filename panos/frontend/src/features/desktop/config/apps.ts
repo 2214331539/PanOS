@@ -68,3 +68,10 @@ export const WINDOW_TITLES = {
   ...Object.fromEntries(DOCK_APPS.map((app) => [app.id, app.title])),
   ...Object.fromEntries(SYSTEM_APPS.map((app) => [app.id, app.title])),
 } as Record<WindowAppId, string>;
+
+const DOCK_APP_ID_SET: ReadonlySet<string> = new Set(DOCK_APP_IDS);
+
+// URL `?app=` 深链只允许内容型 App（welcome / preferences 不进 URL）。
+export function isDockAppId(value: string): value is DockAppId {
+  return DOCK_APP_ID_SET.has(value);
+}

@@ -6,6 +6,7 @@ import { ActionRow } from "@/shared/ui/ActionRow";
 import { AppHeader } from "@/shared/ui/AppHeader";
 import { BadgeRow } from "@/shared/ui/BadgeRow";
 import { Button } from "@/shared/ui/Button";
+import { Hint } from "@/shared/ui/Hint";
 
 import styles from "./WelcomeApp.module.css";
 
@@ -37,6 +38,7 @@ export function WelcomeApp() {
           联系我
         </Button>
       </ActionRow>
+      <Hint>小提示：桌面端按 ⌘K（或 Ctrl+K）可随时打开 Spotlight，快速跳转到任意应用。</Hint>
     </section>
   );
 }

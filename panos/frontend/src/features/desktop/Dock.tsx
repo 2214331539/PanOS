@@ -28,6 +28,7 @@ export function Dock() {
               <AppIcon accent={app.accent} className={styles.icon}>
                 <Icon aria-hidden="true" size={25} strokeWidth={2.2} />
               </AppIcon>
+              {app.stage ? <span className={styles.stage}>{app.stage}</span> : null}
               <span className={styles.label}>{app.title}</span>
               {isOpen ? <span className={styles.dot} aria-hidden="true" /> : null}
             </button>

@@ -48,6 +48,23 @@ if [ "$RUN_API" -eq 1 ] && [ ! -d "$ROOT/panos/backend/.venv" ]; then
   (cd "$ROOT/panos/backend" && uv sync)
 fi
 
+# ---- 后端敏感配置不入库：缺 .env 时首次自动生成（账号 admin + 随机密码/密钥）----
+ENV_FILE="$ROOT/panos/backend/.env"
+if [ "$RUN_API" -eq 1 ] && [ ! -f "$ENV_FILE" ]; then
+  need openssl
+  ADMIN_PW="$(openssl rand -hex 8)"
+  cat > "$ENV_FILE" <<EOF
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=${ADMIN_PW}
+AUTH_SECRET=$(openssl rand -hex 32)
+CONTACT_RATE_LIMIT_SECRET=$(openssl rand -hex 32)
+# 本地开发：放开任意 localhost 端口（Vite 端口被占用时会自动顺延）；生产环境不要设置此项
+BACKEND_CORS_ORIGIN_REGEX=^https?://(localhost|127\\.0\\.0\\.1)(:\\d+)?$
+EOF
+  echo "▶ 已生成 panos/backend/.env（不入库）"
+  echo "  后台登录：admin / ${ADMIN_PW}   （改密码请直接编辑该文件）"
+fi
+
 # ---- 起本地数据库（docker 可用时）----
 if [ "$RUN_API" -eq 1 ] && command -v docker >/dev/null 2>&1; then
   echo "▶ 启动本地数据库（docker compose up -d）..."
