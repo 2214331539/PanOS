@@ -12,9 +12,21 @@ import styles from "./Dock.module.css";
 import { useWindowStore } from "./window-store";
 
 // macOS 式鱼眼放大：图标缩放随「光标 - 图标中心」距离衰减，弹簧跟手。
-const MAGNIFY_RANGE = 110;
+// 半径只覆盖到紧邻图标（间距约 68px），余弦衰减让相邻图标只轻微跟随、
+// 再远的完全不动，避免“一片图标同时放大”。
+const MAGNIFY_RANGE = 88;
 const MAGNIFY_SCALE = 1.5;
 const SPRING = { stiffness: 420, damping: 28, mass: 0.35 };
+
+function magnification(distance: number): number {
+  const offset = Math.abs(distance);
+  if (offset >= MAGNIFY_RANGE) {
+    return 1;
+  }
+  // 余弦窗：中心 = MAGNIFY_SCALE，边缘平滑落回 1，肩部衰减比线性快得多。
+  const falloff = 0.5 + 0.5 * Math.cos((offset / MAGNIFY_RANGE) * Math.PI);
+  return 1 + (MAGNIFY_SCALE - 1) * falloff;
+}
 
 function DockItem({
   app,
@@ -37,11 +49,7 @@ function DockItem({
     if (!bounds) return Number.POSITIVE_INFINITY;
     return x - (bounds.left + bounds.width / 2);
   });
-  const targetScale = useTransform(
-    distance,
-    [-MAGNIFY_RANGE, 0, MAGNIFY_RANGE],
-    [1, MAGNIFY_SCALE, 1],
-  );
+  const targetScale = useTransform(distance, magnification);
   const scale = useSpring(targetScale, SPRING);
   // 放大同时上浮，模拟从 Dock「探出来」的感觉。
   const lift = useTransform(scale, (value) => -(value - 1) * 22);

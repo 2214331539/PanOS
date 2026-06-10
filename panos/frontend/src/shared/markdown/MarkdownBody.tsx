@@ -7,7 +7,7 @@ import styles from "./MarkdownBody.module.css";
 
 // 受限 markdown 渲染：GFM + 白名单消毒（防 XSS）+ 代码高亮。整块 lazy 加载。
 // 文章正文、项目详情等所有需要渲染 Markdown 的场景共用。
-export function MarkdownBody({ content }: { content: string }) {
+function MarkdownBody({ content }: { content: string }) {
   return (
     <div className={styles.prose}>
       <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize, rehypeHighlight]}>

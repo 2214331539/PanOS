@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 
 import { apiGet } from "@/shared/lib/api/client";
 
-export interface Cover {
+interface Cover {
   url: string;
   alt: string | null;
 }
 
-export interface CategoryRef {
+interface CategoryRef {
   name: string;
   slug: string;
 }
@@ -23,7 +23,7 @@ export interface ArticleCard {
   publishedAt: string | null;
 }
 
-export interface ArticleNav {
+interface ArticleNav {
   slug: string;
   title: string;
 }

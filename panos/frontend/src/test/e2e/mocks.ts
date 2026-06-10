@@ -1,12 +1,12 @@
 import type { Page } from "@playwright/test";
 
 // 1x1 透明 PNG，避免 E2E 依赖外网图片。
-export const TINY_PNG =
+const TINY_PNG =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
 
 const envelope = (data: unknown, meta: Record<string, unknown> = {}) => ({ data, meta });
 
-export const ARTICLE = {
+const ARTICLE = {
   id: "a1",
   slug: "agent-memory-intro",
   title: "Agent Memory 的核心价值",
@@ -17,7 +17,7 @@ export const ARTICLE = {
   publishedAt: "2026-06-06T00:00:00Z",
 };
 
-export const PROJECT = {
+const PROJECT = {
   id: "p1",
   slug: "panos",
   name: "PanOS",
@@ -32,7 +32,7 @@ export const PROJECT = {
   publishedAt: "2026-06-08T00:00:00Z",
 };
 
-export const GALLERY_ITEM = {
+const GALLERY_ITEM = {
   id: "g1",
   slug: "panos-wallpaper",
   title: "PanOS Wallpaper",
@@ -44,7 +44,7 @@ export const GALLERY_ITEM = {
   allowDownload: false,
 };
 
-export const SOCIAL_LINK = {
+const SOCIAL_LINK = {
   id: "l1",
   platform: "GitHub",
   slug: "github",

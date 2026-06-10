@@ -2,7 +2,7 @@
 // 不在 CSS / 组件里硬编码图片地址；壁纸通过 --panos-wallpaper CSS 变量注入。
 // V1 使用远程 URL；后续可由后台 site_settings + media_assets 覆盖。
 
-export interface ImageAsset {
+interface ImageAsset {
   url: string;
   alt: string;
 }

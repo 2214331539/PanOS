@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { apiGet } from "@/shared/lib/api/client";
 
-export interface GalleryMedia {
+interface GalleryMedia {
   url: string;
   width: number | null;
   height: number | null;

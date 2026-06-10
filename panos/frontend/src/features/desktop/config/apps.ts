@@ -6,10 +6,10 @@ import type { LucideIcon } from "lucide-react";
 
 import type { AccentKey } from "@/shared/constants/theme";
 
-export type AppIconComponent = LucideIcon;
+type AppIconComponent = LucideIcon;
 
 // 先固定 id 列表，派生类型；注册表再按这些类型约束，保证 id 字面量与类型同步。
-export const DOCK_APP_IDS = [
+const DOCK_APP_IDS = [
   "about",
   "articles",
   "ideas",
@@ -20,10 +20,8 @@ export const DOCK_APP_IDS = [
   "links",
   "contact",
 ] as const;
-export const SYSTEM_APP_IDS = ["welcome", "preferences"] as const;
-
 export type DockAppId = (typeof DOCK_APP_IDS)[number];
-export type SystemAppId = (typeof SYSTEM_APP_IDS)[number];
+type SystemAppId = "welcome" | "preferences";
 export type WindowAppId = DockAppId | SystemAppId;
 
 export interface DockAppDefinition {
@@ -37,7 +35,7 @@ export interface DockAppDefinition {
   stage?: string;
 }
 
-export interface SystemAppDefinition {
+interface SystemAppDefinition {
   id: SystemAppId;
   title: string;
   heading: string;
@@ -59,7 +57,7 @@ export const DOCK_APPS: readonly DockAppDefinition[] = [
 ];
 
 // 系统型 App（无 Dock 入口）：欢迎窗口、系统偏好。
-export const SYSTEM_APPS: readonly SystemAppDefinition[] = [
+const SYSTEM_APPS: readonly SystemAppDefinition[] = [
   { id: "welcome", title: "Welcome to PanOS", heading: "Welcome to PanOS", label: "欢迎", kind: "system" },
   { id: "preferences", title: "System Preferences", heading: "System Preferences", label: "偏好设置", kind: "system" },
 ];
