@@ -1,9 +1,10 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Info, LogIn, LogOut, Mail, Monitor, RotateCcw, Search, Settings, SunMedium } from "lucide-react";
+import { Info, LogIn, LogOut, Mail, Monitor, Moon, RotateCcw, Search, Settings, SunMedium } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { LoginDialog } from "@/features/auth/LoginDialog";
 import { useAuthStore } from "@/shared/stores/auth-store";
+import type { ThemeMode } from "@/shared/stores/theme-store";
 import { useThemeStore } from "@/shared/stores/theme-store";
 import { IconButton } from "@/shared/ui/Button";
 import { Tooltip } from "@/shared/ui/Tooltip";
@@ -19,6 +20,18 @@ function formatClock(date: Date) {
     minute: "2-digit",
   });
 }
+
+// 三态循环按钮的可预期性：tooltip 同时告知当前模式与下一次点击的去向。
+const THEME_LABELS: Record<ThemeMode, string> = {
+  system: "跟随系统",
+  light: "浅色",
+  dark: "深色",
+};
+const NEXT_THEME: Record<ThemeMode, ThemeMode> = {
+  system: "light",
+  light: "dark",
+  dark: "system",
+};
 
 export function MenuBar() {
   const [clock, setClock] = useState(() => formatClock(new Date()));
@@ -91,14 +104,14 @@ export function MenuBar() {
       </div>
 
       <div className={styles.right}>
-        <Tooltip label="Open Spotlight">
+        <Tooltip label="Spotlight 搜索（⌘K）">
           <IconButton label="Open Spotlight" onClick={openSpotlight}>
             <Search size={16} />
           </IconButton>
         </Tooltip>
-        <Tooltip label={`Theme: ${mode}`}>
+        <Tooltip label={`主题：${THEME_LABELS[mode]}（点击切到${THEME_LABELS[NEXT_THEME[mode]]}）`}>
           <IconButton label="Cycle theme" onClick={cycleMode}>
-            {mode === "system" ? <Monitor size={16} /> : <SunMedium size={16} />}
+            {mode === "system" ? <Monitor size={16} /> : mode === "dark" ? <Moon size={16} /> : <SunMedium size={16} />}
           </IconButton>
         </Tooltip>
         <time className={styles.clock}>{clock}</time>

@@ -68,11 +68,10 @@ export function ArticlesApp() {
 
   const action = (
     <div className={styles.tools}>
-      <div className={styles.toggle} role="tablist" aria-label="分类方式">
+      <div className={styles.toggle} role="group" aria-label="分类方式">
         <button
           type="button"
-          role="tab"
-          aria-selected={view === "category"}
+          aria-pressed={view === "category"}
           className={view === "category" ? styles.toggleActive : styles.toggleBtn}
           onClick={() => setView("category")}
         >
@@ -80,8 +79,7 @@ export function ArticlesApp() {
         </button>
         <button
           type="button"
-          role="tab"
-          aria-selected={view === "time"}
+          aria-pressed={view === "time"}
           className={view === "time" ? styles.toggleActive : styles.toggleBtn}
           onClick={() => setView("time")}
         >

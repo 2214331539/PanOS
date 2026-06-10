@@ -91,4 +91,23 @@
     font-size: 12px;
     font-weight: 700;
   }
+
+  .mobileHomeIcon {
+    position: relative;
+    display: inline-grid;
+  }
+
+  .mobileHomeStage {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface-strong);
+    color: var(--text-muted);
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1;
+    padding: 3px 5px;
+  }
 }

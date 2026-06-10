@@ -32,6 +32,10 @@ interface WindowStore {
 const DEFAULT_WIDTH = 880;
 const VIEWPORT_MARGIN = 48;
 const CASCADE_STEP = 28;
+// 与 DesktopShell.module.css `.windowLayer { inset: 36px 0 94px }` 对齐（菜单栏 / Dock 区域）。
+const MENU_BAR_HEIGHT = 36;
+const DOCK_AREA_HEIGHT = 94;
+const TITLEBAR_HEIGHT = 44;
 
 function viewport(): { width: number; height: number } {
   if (typeof window === "undefined") {
@@ -40,26 +44,48 @@ function viewport(): { width: number; height: number } {
   return { width: window.innerWidth, height: window.innerHeight };
 }
 
+// 当前视口下窗口的实际渲染宽度（与 CSS min() 一致），避免窄屏时 clamp 范围失真。
+function frameWidth(viewportWidth: number): number {
+  return Math.min(DEFAULT_WIDTH, viewportWidth - VIEWPORT_MARGIN);
+}
+
 // 居中的初始位置；按已开窗口数做轻微层叠偏移，避免多窗口完全重叠。
 function centeredPosition(offsetIndex: number): { x: number; y: number } {
   const { width } = viewport();
-  const frameWidth = Math.min(DEFAULT_WIDTH, width - VIEWPORT_MARGIN);
   const offset = (offsetIndex % 6) * CASCADE_STEP;
   return {
-    x: Math.max(24, (width - frameWidth) / 2) + offset,
+    x: Math.max(24, (width - frameWidth(width)) / 2) + offset,
     y: 24 + offset,
   };
 }
 
 // 拖拽边界：至少保留约 200px 可见，标题栏不被菜单栏 / Dock 吞掉。
-function clampPosition(x: number, y: number): { x: number; y: number } {
+// 导出给 WindowFrame 在拖拽过程中实时使用，保证视觉位置与最终落点一致。
+export function clampWindowPosition(x: number, y: number): { x: number; y: number } {
   const { width, height } = viewport();
   const minVisible = 200;
-  const safeAreaHeight = height - 36 - 94;
+  const safeAreaHeight = height - MENU_BAR_HEIGHT - DOCK_AREA_HEIGHT;
   return {
-    x: Math.min(Math.max(x, -(DEFAULT_WIDTH - minVisible)), width - minVisible),
-    y: Math.min(Math.max(y, 0), Math.max(0, safeAreaHeight - 44)),
+    x: Math.min(Math.max(x, -(frameWidth(width) - minVisible)), width - minVisible),
+    y: Math.min(Math.max(y, 0), Math.max(0, safeAreaHeight - TITLEBAR_HEIGHT)),
   };
+}
+
+// 关闭 / 最小化当前窗口后，焦点交给剩余可见窗口中层级最高的那个。
+function topVisibleWindowId(
+  windows: Partial<Record<WindowAppId, PanosWindow>>,
+  excludeId: WindowAppId,
+): WindowAppId | null {
+  let top: PanosWindow | null = null;
+  for (const win of Object.values(windows)) {
+    if (!win?.isOpen || win.isMinimized || win.id === excludeId) {
+      continue;
+    }
+    if (!top || win.zIndex > top.zIndex) {
+      top = win;
+    }
+  }
+  return top?.id ?? null;
 }
 
 function openWindowCount(windows: Partial<Record<WindowAppId, PanosWindow>>): number {
@@ -83,11 +109,10 @@ function createPanosWindow(
 }
 
 export const useWindowStore = create<WindowStore>((set) => ({
-  windows: {
-    welcome: createPanosWindow("welcome", 10, centeredPosition(0)),
-  },
-  activeWindowId: "welcome",
-  nextZIndex: 11,
+  // 初始为空桌面；首访自动弹 Welcome、URL 深链恢复都由 DesktopShell 决定。
+  windows: {},
+  activeWindowId: null,
+  nextZIndex: 10,
   openWindow: (id) =>
     set((state) => {
       const nextZIndex = state.nextZIndex + 1;
@@ -110,21 +135,29 @@ export const useWindowStore = create<WindowStore>((set) => ({
       };
     }),
   closeWindow: (id) =>
-    set((state) => ({
-      windows: {
-        ...state.windows,
-        [id]: state.windows[id] ? { ...state.windows[id], isOpen: false } : undefined,
-      },
-      activeWindowId: state.activeWindowId === id ? null : state.activeWindowId,
-    })),
+    set((state) => {
+      const current = state.windows[id];
+      if (!current) {
+        return state;
+      }
+      return {
+        windows: { ...state.windows, [id]: { ...current, isOpen: false } },
+        activeWindowId:
+          state.activeWindowId === id ? topVisibleWindowId(state.windows, id) : state.activeWindowId,
+      };
+    }),
   minimizeWindow: (id) =>
-    set((state) => ({
-      windows: {
-        ...state.windows,
-        [id]: state.windows[id] ? { ...state.windows[id], isMinimized: true } : undefined,
-      },
-      activeWindowId: state.activeWindowId === id ? null : state.activeWindowId,
-    })),
+    set((state) => {
+      const current = state.windows[id];
+      if (!current) {
+        return state;
+      }
+      return {
+        windows: { ...state.windows, [id]: { ...current, isMinimized: true } },
+        activeWindowId:
+          state.activeWindowId === id ? topVisibleWindowId(state.windows, id) : state.activeWindowId,
+      };
+    }),
   toggleMaximize: (id) =>
     set((state) => ({
       windows: {
@@ -164,7 +197,7 @@ export const useWindowStore = create<WindowStore>((set) => ({
       return {
         windows: {
           ...state.windows,
-          [id]: { ...current, ...clampPosition(x, y) },
+          [id]: { ...current, ...clampWindowPosition(x, y) },
         },
       };
     }),
