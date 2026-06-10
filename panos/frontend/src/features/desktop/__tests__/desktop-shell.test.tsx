@@ -9,7 +9,7 @@ import { useWindowStore } from "../window-store";
 
 describe("DesktopShell", () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    window.sessionStorage.clear();
     // zustand store 是模块级单例，测试间手动复位。
     useWindowStore.setState({ windows: {}, activeWindowId: null, nextZIndex: 10 });
   });
@@ -25,7 +25,7 @@ describe("DesktopShell", () => {
 
     expect(screen.getByLabelText("PanOS desktop")).toBeInTheDocument();
     expect(screen.getByLabelText("PanOS Dock")).toBeInTheDocument();
-    // 首访（无 localStorage 标记）自动弹出 Welcome 窗口。
+    // 会话首访（无 sessionStorage 标记）自动弹出 Welcome 窗口。
     expect(screen.getAllByText("Welcome to PanOS").length).toBeGreaterThan(0);
   });
 

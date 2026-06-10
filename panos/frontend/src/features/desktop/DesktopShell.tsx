@@ -19,7 +19,8 @@ import { useWindowStore } from "./window-store";
 import { WindowFrame } from "./WindowFrame";
 import { useSpotlightStore } from "./spotlight-store";
 
-// 首访自动弹 Welcome，回访保持安静（菜单栏「Restart Intro」可随时找回）。
+// 每个浏览器会话首次打开自动弹 Welcome（sessionStorage：刷新不重复弹，
+// 新开会话再弹）；菜单栏「Restart Intro」可随时找回。
 const INTRO_SEEN_KEY = "panos-intro-seen";
 
 export function DesktopShell() {
@@ -41,8 +42,8 @@ export function DesktopShell() {
       openWindow(appParam);
       return;
     }
-    if (!window.localStorage.getItem(INTRO_SEEN_KEY)) {
-      window.localStorage.setItem(INTRO_SEEN_KEY, "1");
+    if (!window.sessionStorage.getItem(INTRO_SEEN_KEY)) {
+      window.sessionStorage.setItem(INTRO_SEEN_KEY, "1");
       openWindow("welcome");
     }
     // 仅启动时执行一次；后续 URL 由下面的同步 effect 维护。
