@@ -2,16 +2,7 @@ from datetime import datetime
 
 from app.db.models.enums import ContentStatus, Visibility
 from app.schemas.base import ApiModel
-
-
-class CoverSchema(ApiModel):
-    url: str
-    alt: str | None = None
-
-
-class CategoryRefSchema(ApiModel):
-    name: str
-    slug: str
+from app.schemas.refs import CategoryRefSchema, CoverSchema
 
 
 class ArticleNavSchema(ApiModel):

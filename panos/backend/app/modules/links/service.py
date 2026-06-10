@@ -1,9 +1,7 @@
-import re
-from uuid import uuid4
-
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.errors import not_found, slug_conflict
+from app.core.text import slugify
 from app.db.models.content import SocialLink
 from app.modules.links import repository as repo
 from app.modules.links.schemas import (
@@ -12,25 +10,6 @@ from app.modules.links.schemas import (
     AdminLinkUpdate,
     PublicLinkSchema,
 )
-
-
-def _slugify(value: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
-    return slug or uuid4().hex[:8]
-
-
-def _conflict(message: str) -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_409_CONFLICT,
-        detail={"error": {"code": "SLUG_CONFLICT", "message": message}},
-    )
-
-
-def _not_found() -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail={"error": {"code": "NOT_FOUND", "message": "链接不存在"}},
-    )
 
 
 def _public(link: SocialLink) -> PublicLinkSchema:
@@ -71,9 +50,9 @@ async def admin_list_links(session: AsyncSession) -> list[AdminLinkItem]:
 
 
 async def create_link(session: AsyncSession, payload: AdminLinkCreate) -> AdminLinkItem:
-    slug = payload.slug or _slugify(payload.platform)
+    slug = payload.slug or slugify(payload.platform)
     if await repo.get_by_slug(session, slug) is not None:
-        raise _conflict(f"slug 已存在：{slug}")
+        raise slug_conflict(slug)
     link = SocialLink(
         platform=payload.platform,
         slug=slug,
@@ -93,12 +72,12 @@ async def update_link(
 ) -> AdminLinkItem:
     link = await repo.admin_get(session, link_id)
     if link is None:
-        raise _not_found()
+        raise not_found("链接不存在")
     data = payload.model_dump(exclude_unset=True)
 
     new_slug = data.get("slug")
     if new_slug and new_slug != link.slug and await repo.get_by_slug(session, new_slug):
-        raise _conflict(f"slug 已存在：{new_slug}")
+        raise slug_conflict(new_slug)
 
     fields = (
         "platform",
@@ -122,5 +101,5 @@ async def update_link(
 async def delete_link(session: AsyncSession, link_id: str) -> None:
     link = await repo.admin_get(session, link_id)
     if link is None:
-        raise _not_found()
+        raise not_found("链接不存在")
     await repo.remove(session, link)

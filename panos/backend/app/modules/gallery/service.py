@@ -1,9 +1,9 @@
-import re
-from uuid import UUID, uuid4
+from uuid import UUID
 
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.errors import not_found, slug_conflict
+from app.core.text import slugify
 from app.db.models.content import GalleryItem, MediaAsset
 from app.modules.gallery import repository as repo
 from app.modules.gallery.schemas import (
@@ -11,29 +11,10 @@ from app.modules.gallery.schemas import (
     AdminGalleryDetail,
     AdminGalleryListItem,
     AdminGalleryUpdate,
-    CategoryRefSchema,
     GalleryItemSchema,
     GalleryMediaSchema,
 )
-
-
-def _slugify(value: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
-    return slug or uuid4().hex[:8]
-
-
-def _conflict(message: str) -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_409_CONFLICT,
-        detail={"error": {"code": "SLUG_CONFLICT", "message": message}},
-    )
-
-
-def _not_found() -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail={"error": {"code": "NOT_FOUND", "message": "图片不存在"}},
-    )
+from app.schemas.refs import CategoryRefSchema
 
 
 def _public_item(
@@ -108,7 +89,7 @@ async def admin_list_gallery(
 async def admin_get_gallery_item(session: AsyncSession, item_id: str) -> AdminGalleryDetail:
     item = await repo.admin_get(session, item_id)
     if item is None:
-        raise _not_found()
+        raise not_found("图片不存在")
     media_url = await repo.get_media_url(session, item.media_asset_id)
     return _admin_detail(item, media_url)
 
@@ -116,9 +97,9 @@ async def admin_get_gallery_item(session: AsyncSession, item_id: str) -> AdminGa
 async def create_gallery_item(
     session: AsyncSession, payload: AdminGalleryCreate
 ) -> AdminGalleryDetail:
-    slug = payload.slug or _slugify(payload.title)
+    slug = payload.slug or slugify(payload.title)
     if await repo.get_by_slug(session, slug) is not None:
-        raise _conflict(f"slug 已存在：{slug}")
+        raise slug_conflict(slug)
     item = GalleryItem(
         slug=slug,
         title=payload.title,
@@ -142,12 +123,12 @@ async def update_gallery_item(
 ) -> AdminGalleryDetail:
     item = await repo.admin_get(session, item_id)
     if item is None:
-        raise _not_found()
+        raise not_found("图片不存在")
     data = payload.model_dump(exclude_unset=True)
 
     new_slug = data.get("slug")
     if new_slug and new_slug != item.slug and await repo.get_by_slug(session, new_slug):
-        raise _conflict(f"slug 已存在：{new_slug}")
+        raise slug_conflict(new_slug)
 
     simple_fields = ("title", "slug", "description", "tool", "allow_download", "sort_order")
     for field in simple_fields:
@@ -172,5 +153,5 @@ async def update_gallery_item(
 async def delete_gallery_item(session: AsyncSession, item_id: str) -> None:
     item = await repo.admin_get(session, item_id)
     if item is None:
-        raise _not_found()
+        raise not_found("图片不存在")
     await repo.remove(session, item)

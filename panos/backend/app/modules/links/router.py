@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import apply_no_store, apply_public_cache
-from app.core.security import AdminPrincipal, require_admin_user
+from app.core.security import require_admin_user
 from app.db.session import get_session
 from app.modules.links import service
 from app.modules.links.schemas import (
@@ -14,7 +14,9 @@ from app.modules.links.schemas import (
 from app.schemas.responses import DataEnvelope
 
 public_router = APIRouter(prefix="/links", tags=["links"])
-admin_router = APIRouter(prefix="/admin/links", tags=["admin"])
+admin_router = APIRouter(
+    dependencies=[Depends(require_admin_user)], prefix="/admin/links", tags=["admin"]
+)
 
 
 @public_router.get("", response_model=DataEnvelope[list[PublicLinkSchema]])
@@ -30,7 +32,6 @@ async def links(
 @admin_router.get("", response_model=DataEnvelope[list[AdminLinkItem]])
 async def admin_list_links(
     response: Response,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[list[AdminLinkItem]]:
     apply_no_store(response)
@@ -42,7 +43,6 @@ async def admin_list_links(
 )
 async def admin_create_link(
     payload: AdminLinkCreate,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[AdminLinkItem]:
     return DataEnvelope(data=await service.create_link(session, payload))
@@ -52,7 +52,6 @@ async def admin_create_link(
 async def admin_update_link(
     link_id: str,
     payload: AdminLinkUpdate,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[AdminLinkItem]:
     return DataEnvelope(data=await service.update_link(session, link_id, payload))
@@ -61,7 +60,6 @@ async def admin_update_link(
 @admin_router.delete("/{link_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def admin_delete_link(
     link_id: str,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> None:
     await service.delete_link(session, link_id)

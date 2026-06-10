@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import { apiGet } from "@/shared/lib/api/client";
 
-import type { Category } from "@/features/articles/api";
-
 export interface Cover {
   url: string;
   alt: string | null;
@@ -75,12 +73,5 @@ export function useProject(slug: string) {
     queryKey: ["project", slug],
     queryFn: async () => (await apiGet<ProjectDetail>(`/projects/${slug}`)).data,
     enabled: Boolean(slug),
-  });
-}
-
-export function useProjectCategories() {
-  return useQuery({
-    queryKey: ["categories", "projects"],
-    queryFn: async () => (await apiGet<Category[]>("/categories?module=projects")).data,
   });
 }

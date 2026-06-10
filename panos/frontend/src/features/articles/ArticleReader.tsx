@@ -6,7 +6,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { useArticle } from "./api";
 import styles from "./ArticleReader.module.css";
 
-const ArticleBody = lazy(() => import("./ArticleBody"));
+const MarkdownBody = lazy(() => import("@/shared/markdown/MarkdownBody"));
 
 function formatDate(iso: string | null): string {
   return iso ? iso.slice(0, 10) : "";
@@ -77,7 +77,7 @@ export function ArticleReader({
       <p className={styles.excerpt}>{data.excerpt}</p>
 
       <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
-        <ArticleBody content={data.bodyMdx} />
+        <MarkdownBody content={data.bodyMdx} />
       </Suspense>
 
       {data.previous || data.next ? (

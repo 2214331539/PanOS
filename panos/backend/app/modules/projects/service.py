@@ -1,10 +1,10 @@
-import re
 from datetime import UTC, datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.errors import not_found, slug_conflict
+from app.core.text import slugify
 from app.db.models.content import Project, ProjectLink
 from app.db.models.enums import ProjectStatus, Visibility
 from app.modules.projects import repository as repo
@@ -15,31 +15,11 @@ from app.modules.projects.schemas import (
     AdminProjectLinkInput,
     AdminProjectListItem,
     AdminProjectUpdate,
-    CategoryRefSchema,
-    CoverSchema,
     ProjectCardSchema,
     ProjectDetailSchema,
     ProjectLinkSchema,
 )
-
-
-def _slugify(value: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
-    return slug or uuid4().hex[:8]
-
-
-def _conflict(message: str) -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_409_CONFLICT,
-        detail={"error": {"code": "SLUG_CONFLICT", "message": message}},
-    )
-
-
-def _not_found() -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail={"error": {"code": "NOT_FOUND", "message": "项目不存在"}},
-    )
+from app.schemas.refs import CategoryRefSchema, CoverSchema
 
 
 def _links_schema(links: list[ProjectLink]) -> list[ProjectLinkSchema]:
@@ -123,7 +103,7 @@ async def list_projects(
 async def get_project(session: AsyncSession, slug: str) -> ProjectDetailSchema:
     row = await repo.get_public_by_slug(session, slug)
     if row is None:
-        raise _not_found()
+        raise not_found("项目不存在")
     project = row[0]
     links = await repo.list_links(session, [project.id])
     card = _card(row, links)
@@ -161,15 +141,15 @@ async def admin_list_projects(
 async def admin_get_project(session: AsyncSession, project_id: str) -> AdminProjectDetail:
     project = await repo.admin_get(session, project_id)
     if project is None:
-        raise _not_found()
+        raise not_found("项目不存在")
     links = await repo.list_links(session, [project.id])
     return _admin_detail(project, links)
 
 
 async def create_project(session: AsyncSession, payload: AdminProjectCreate) -> AdminProjectDetail:
-    slug = payload.slug or _slugify(payload.name)
+    slug = payload.slug or slugify(payload.name)
     if await repo.get_by_slug(session, slug) is not None:
-        raise _conflict(f"slug 已存在：{slug}")
+        raise slug_conflict(slug)
     project = Project(
         slug=slug,
         name=payload.name,
@@ -202,12 +182,12 @@ async def update_project(
 ) -> AdminProjectDetail:
     project = await repo.admin_get(session, project_id)
     if project is None:
-        raise _not_found()
+        raise not_found("项目不存在")
     data = payload.model_dump(exclude_unset=True)
 
     new_slug = data.get("slug")
     if new_slug and new_slug != project.slug and await repo.get_by_slug(session, new_slug):
-        raise _conflict(f"slug 已存在：{new_slug}")
+        raise slug_conflict(new_slug)
 
     simple_fields = (
         "name",
@@ -247,5 +227,5 @@ async def update_project(
 async def delete_project(session: AsyncSession, project_id: str) -> None:
     project = await repo.admin_get(session, project_id)
     if project is None:
-        raise _not_found()
+        raise not_found("项目不存在")
     await repo.remove(session, project)

@@ -8,7 +8,9 @@ import { Button } from "@/shared/ui/Button";
 import { ContentLayout, SidebarButton } from "@/shared/ui/ContentLayout";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
-import { type ArticleCard as ArticleCardData, useArticleCategories, useArticles } from "./api";
+import { useCategories } from "@/shared/lib/api/categories";
+
+import { type ArticleCard as ArticleCardData, useArticles } from "./api";
 import { ArticleCard } from "./ArticleCard";
 import { ArticleReader } from "./ArticleReader";
 import styles from "./ArticlesApp.module.css";
@@ -40,7 +42,7 @@ export function ArticlesApp() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
 
-  const { data: categories } = useArticleCategories();
+  const { data: categories } = useCategories("articles");
   const { data: articles, isLoading } = useArticles(
     view === "category" && activeCategory ? activeCategory : undefined,
   );

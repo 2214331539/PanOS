@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 from app.db.models.enums import ContentStatus, Visibility
 from app.schemas.base import ApiModel
+from app.schemas.refs import CategoryRefSchema
 
 
 class GalleryMediaSchema(ApiModel):
@@ -9,11 +10,6 @@ class GalleryMediaSchema(ApiModel):
     width: int | None = None
     height: int | None = None
     alt: str | None = None
-
-
-class CategoryRefSchema(ApiModel):
-    name: str
-    slug: str
 
 
 class GalleryItemSchema(ApiModel):

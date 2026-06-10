@@ -1,10 +1,10 @@
-import re
 from datetime import UTC, datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.errors import not_found, slug_conflict
+from app.core.text import slugify
 from app.db.models.content import Article
 from app.db.models.enums import ContentStatus
 from app.modules.articles import repository as repo
@@ -17,32 +17,13 @@ from app.modules.articles.schemas import (
     ArticleCardSchema,
     ArticleDetailSchema,
     ArticleNavSchema,
-    CategoryRefSchema,
-    CoverSchema,
 )
+from app.schemas.refs import CategoryRefSchema, CoverSchema
 
 
-def _slugify(value: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
-    return slug or uuid4().hex[:8]
-
-
-def _reading_minutes(body: str) -> int:
+def reading_minutes(body: str) -> int:
+    """按正文长度估算阅读分钟数（seed 等场景复用）。"""
     return max(1, len(body) // 400)
-
-
-def _conflict(message: str) -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_409_CONFLICT,
-        detail={"error": {"code": "SLUG_CONFLICT", "message": message}},
-    )
-
-
-def _not_found() -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail={"error": {"code": "NOT_FOUND", "message": "文章不存在"}},
-    )
 
 
 def _cover(url: str | None, alt: str | None) -> CoverSchema | None:
@@ -112,7 +93,7 @@ async def list_articles(
 async def get_article(session: AsyncSession, slug: str) -> ArticleDetailSchema:
     row = await repo.get_published_by_slug(session, slug)
     if row is None:
-        raise _not_found()
+        raise not_found("文章不存在")
     article = row[0]
     previous: ArticleNavSchema | None = None
     nxt: ArticleNavSchema | None = None
@@ -142,14 +123,14 @@ async def admin_list_articles(
 async def admin_get_article(session: AsyncSession, article_id: str) -> AdminArticleDetail:
     article = await repo.admin_get(session, article_id)
     if article is None:
-        raise _not_found()
+        raise not_found("文章不存在")
     return _admin_detail(article)
 
 
 async def create_article(session: AsyncSession, payload: AdminArticleCreate) -> AdminArticleDetail:
-    slug = payload.slug or _slugify(payload.title)
+    slug = payload.slug or slugify(payload.title)
     if await repo.get_by_slug(session, slug) is not None:
-        raise _conflict(f"slug 已存在：{slug}")
+        raise slug_conflict(slug)
     article = Article(
         slug=slug,
         title=payload.title,
@@ -160,7 +141,7 @@ async def create_article(session: AsyncSession, payload: AdminArticleCreate) -> 
         status=payload.status,
         visibility=payload.visibility,
         is_featured=payload.is_featured,
-        reading_minutes=_reading_minutes(payload.body_mdx),
+        reading_minutes=reading_minutes(payload.body_mdx),
         seo_title=payload.seo_title,
         seo_description=payload.seo_description,
         published_at=datetime.now(UTC)
@@ -176,12 +157,12 @@ async def update_article(
 ) -> AdminArticleDetail:
     article = await repo.admin_get(session, article_id)
     if article is None:
-        raise _not_found()
+        raise not_found("文章不存在")
     data = payload.model_dump(exclude_unset=True)
 
     new_slug = data.get("slug")
     if new_slug and new_slug != article.slug and await repo.get_by_slug(session, new_slug):
-        raise _conflict(f"slug 已存在：{new_slug}")
+        raise slug_conflict(new_slug)
 
     simple_fields = (
         "title",
@@ -202,7 +183,7 @@ async def update_article(
     if data.get("visibility") is not None:
         article.visibility = data["visibility"]
     if data.get("body_mdx"):
-        article.reading_minutes = _reading_minutes(data["body_mdx"])
+        article.reading_minutes = reading_minutes(data["body_mdx"])
     if data.get("status") is not None:
         article.status = data["status"]
         if data["status"] == ContentStatus.published and article.published_at is None:

@@ -24,6 +24,7 @@ from app.db.models.content import (
 )
 from app.db.models.enums import ContentStatus, MediaType, ProjectStatus, Visibility
 from app.db.session import async_session_factory
+from app.modules.articles.service import reading_minutes
 
 
 class ArticleSeed(TypedDict):
@@ -305,7 +306,7 @@ async def main() -> None:
                     category_id=category_ids.get(item["category"]),
                     status=ContentStatus.published,
                     visibility=Visibility.public,
-                    reading_minutes=max(1, len(body) // 400),
+                    reading_minutes=reading_minutes(body),
                     is_featured=False,
                     published_at=item["published_at"],
                 )

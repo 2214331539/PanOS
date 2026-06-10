@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { AdminLayout } from "@/features/admin/AdminLayout";
 import { Button } from "@/shared/ui/Button";
 
-import { useGalleryCategories } from "../api";
+import { useCategories } from "@/shared/lib/api/categories";
 import {
   useAdminGallery,
   useCreateGalleryItem,
@@ -15,7 +15,7 @@ import styles from "./GalleryAdminRoute.module.css";
 
 export function GalleryAdminRoute() {
   const { data, isLoading } = useAdminGallery();
-  const { data: categories } = useGalleryCategories();
+  const { data: categories } = useCategories("gallery");
   const createItem = useCreateGalleryItem();
   const updateItem = useUpdateGalleryItem();
   const deleteItem = useDeleteGalleryItem();

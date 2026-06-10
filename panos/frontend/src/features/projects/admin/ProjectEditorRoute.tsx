@@ -5,11 +5,13 @@ import { useNavigate, useParams } from "react-router";
 import { AdminLayout } from "@/features/admin/AdminLayout";
 import { Button } from "@/shared/ui/Button";
 
-import { type ProjectLink, type ProjectStatus, useProjectCategories } from "../api";
+import { useCategories } from "@/shared/lib/api/categories";
+
+import type { ProjectLink, ProjectStatus } from "../api";
 import { type AdminProjectDetail, useAdminProject, useSaveProject } from "./api";
 import styles from "./ProjectEditorRoute.module.css";
 
-const MarkdownEditor = lazy(() => import("@/features/articles/admin/MarkdownEditor"));
+const MarkdownEditor = lazy(() => import("@/shared/markdown/MarkdownEditor"));
 
 const STATUS_OPTIONS: { value: ProjectStatus; label: string }[] = [
   { value: "concept", label: "概念" },
@@ -38,7 +40,7 @@ export function ProjectEditorRoute() {
 
 function EditorForm({ existing }: { existing?: AdminProjectDetail }) {
   const navigate = useNavigate();
-  const { data: categories } = useProjectCategories();
+  const { data: categories } = useCategories("projects");
   const save = useSaveProject();
 
   const [name, setName] = useState(existing?.name ?? "");

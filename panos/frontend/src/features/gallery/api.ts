@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import { apiGet } from "@/shared/lib/api/client";
 
-import type { Category } from "@/features/articles/api";
-
 export interface GalleryMedia {
   url: string;
   width: number | null;
@@ -30,12 +28,5 @@ export function useGallery(category?: string) {
       const qs = category ? `?category=${encodeURIComponent(category)}` : "";
       return (await apiGet<GalleryItem[]>(`/gallery${qs}`)).data;
     },
-  });
-}
-
-export function useGalleryCategories() {
-  return useQuery({
-    queryKey: ["categories", "gallery"],
-    queryFn: async () => (await apiGet<Category[]>("/categories?module=gallery")).data,
   });
 }

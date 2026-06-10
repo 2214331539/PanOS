@@ -5,7 +5,9 @@ import { AppHeader } from "@/shared/ui/AppHeader";
 import { ContentLayout, SidebarButton } from "@/shared/ui/ContentLayout";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
-import { useGallery, useGalleryCategories } from "./api";
+import { useCategories } from "@/shared/lib/api/categories";
+
+import { useGallery } from "./api";
 import { Lightbox } from "./Lightbox";
 import styles from "./GalleryApp.module.css";
 
@@ -13,7 +15,7 @@ export function GalleryApp() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const { data: categories } = useGalleryCategories();
+  const { data: categories } = useCategories("gallery");
   const { data: items, isLoading } = useGallery(activeCategory ?? undefined);
   const list = items ?? [];
 

@@ -34,15 +34,6 @@ export interface ArticleDetail extends ArticleCard {
   next: ArticleNav | null;
 }
 
-export interface Category {
-  id: string;
-  module: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  sortOrder: number;
-}
-
 export function useArticles(category?: string) {
   return useQuery({
     queryKey: ["articles", category ?? "all"],
@@ -58,12 +49,5 @@ export function useArticle(slug: string) {
     queryKey: ["article", slug],
     queryFn: async () => (await apiGet<ArticleDetail>(`/articles/${slug}`)).data,
     enabled: Boolean(slug),
-  });
-}
-
-export function useArticleCategories() {
-  return useQuery({
-    queryKey: ["categories", "articles"],
-    queryFn: async () => (await apiGet<Category[]>("/categories?module=articles")).data,
   });
 }

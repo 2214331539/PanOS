@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import apply_no_store, apply_public_cache
-from app.core.security import AdminPrincipal, require_admin_user
+from app.core.security import require_admin_user
 from app.db.models.enums import ProjectStatus
 from app.db.session import get_session
 from app.modules.projects import service
@@ -17,7 +17,9 @@ from app.modules.projects.schemas import (
 from app.schemas.responses import DataEnvelope
 
 public_router = APIRouter(prefix="/projects", tags=["projects"])
-admin_router = APIRouter(prefix="/admin/projects", tags=["admin"])
+admin_router = APIRouter(
+    dependencies=[Depends(require_admin_user)], prefix="/admin/projects", tags=["admin"]
+)
 
 
 @public_router.get("", response_model=DataEnvelope[list[ProjectCardSchema]])
@@ -62,7 +64,6 @@ async def admin_list_projects(
     response: Response,
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[list[AdminProjectListItem]]:
     apply_no_store(response)
@@ -74,7 +75,6 @@ async def admin_list_projects(
 async def admin_get_project(
     project_id: str,
     response: Response,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[AdminProjectDetail]:
     apply_no_store(response)
@@ -86,7 +86,6 @@ async def admin_get_project(
 )
 async def admin_create_project(
     payload: AdminProjectCreate,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[AdminProjectDetail]:
     return DataEnvelope(data=await service.create_project(session, payload))
@@ -96,7 +95,6 @@ async def admin_create_project(
 async def admin_update_project(
     project_id: str,
     payload: AdminProjectUpdate,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[AdminProjectDetail]:
     return DataEnvelope(data=await service.update_project(session, project_id, payload))
@@ -105,7 +103,6 @@ async def admin_update_project(
 @admin_router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def admin_delete_project(
     project_id: str,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> None:
     await service.delete_project(session, project_id)

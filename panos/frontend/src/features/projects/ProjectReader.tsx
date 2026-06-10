@@ -7,7 +7,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { STATUS_LABEL, useProject } from "./api";
 import styles from "./ProjectReader.module.css";
 
-const ArticleBody = lazy(() => import("@/features/articles/ArticleBody"));
+const MarkdownBody = lazy(() => import("@/shared/markdown/MarkdownBody"));
 
 const SECTION_TITLES: [key: "backgroundMdx" | "architectureMdx" | "processMdx" | "roadmapMdx", title: string][] = [
   ["backgroundMdx", "项目背景"],
@@ -105,7 +105,7 @@ export function ProjectReader({
           data[key] ? (
             <section key={key}>
               <h2 className={styles.sectionTitle}>{title}</h2>
-              <ArticleBody content={data[key]} />
+              <MarkdownBody content={data[key]} />
             </section>
           ) : null,
         )}

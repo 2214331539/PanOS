@@ -5,7 +5,9 @@ import { AppHeader } from "@/shared/ui/AppHeader";
 import { ContentLayout, SidebarButton } from "@/shared/ui/ContentLayout";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
-import { useProjectCategories, useProjects } from "./api";
+import { useCategories } from "@/shared/lib/api/categories";
+
+import { useProjects } from "./api";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectReader } from "./ProjectReader";
 import styles from "./ProjectsApp.module.css";
@@ -14,7 +16,7 @@ export function ProjectsApp() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
 
-  const { data: categories } = useProjectCategories();
+  const { data: categories } = useCategories("projects");
   const { data: projects, isLoading } = useProjects(activeCategory ?? undefined);
 
   if (selectedSlug) {
