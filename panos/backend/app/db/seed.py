@@ -183,11 +183,11 @@ SAMPLE_GALLERY: list[GallerySeed] = [
         "description": "PanOS 默认桌面壁纸。",
         "category": "ui-design",
         "url": (
-            "https://images.unsplash.com/photo-1497366754035-f200968a6e72"
-            "?auto=format&fit=crop&w=1600&q=80"
+            "https://images.unsplash.com/photo-1568507058983-7e7fc6682ab8"
+            "?q=80&w=1600&h=900&fit=crop"
         ),
         "width": 1600,
-        "height": 1067,
+        "height": 900,
         "tool": "Unsplash",
         "shot_at": date(2026, 6, 7),
     },
