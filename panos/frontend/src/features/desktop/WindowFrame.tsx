@@ -1,8 +1,9 @@
 import { X } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { useRef } from "react";
 
+import { cn } from "@/shared/lib/utils/classnames";
 import { Tooltip } from "@/shared/ui/Tooltip";
 
 import styles from "./WindowFrame.module.css";
@@ -36,6 +37,8 @@ export function WindowFrame({
   const toggleMaximize = useWindowStore((state) => state.toggleMaximize);
   const focusWindow = useWindowStore((state) => state.focusWindow);
   const moveWindow = useWindowStore((state) => state.moveWindow);
+  const isActive = useWindowStore((state) => state.activeWindowId === windowState.id);
+  const reduceMotion = useReducedMotion();
 
   const frameRef = useRef<HTMLElement | null>(null);
   const drag = useRef<DragState | null>(null);
@@ -106,12 +109,20 @@ export function WindowFrame({
   return (
     <motion.article
       ref={frameRef}
-      className={windowState.isMaximized ? `${styles.frame} ${styles.maximized}` : styles.frame}
+      className={cn(
+        styles.frame,
+        windowState.isMaximized && styles.maximized,
+        !isActive && styles.inactive,
+      )}
       style={{ left: windowState.x, top: windowState.y, zIndex: windowState.zIndex }}
-      initial={{ opacity: 0, scale: 0.96, y: 16 }}
+      initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.92, y: 28 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.98, y: 10 }}
-      transition={{ duration: 0.18, ease: "easeOut" }}
+      exit={
+        reduceMotion
+          ? { opacity: 0 }
+          : { opacity: 0, scale: 0.94, y: 22, transition: { duration: 0.16, ease: "easeIn" } }
+      }
+      transition={{ type: "spring", stiffness: 320, damping: 28, mass: 0.8 }}
       onMouseDown={() => focusWindow(windowState.id)}
       aria-label={windowState.title}
     >

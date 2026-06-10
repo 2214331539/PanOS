@@ -9,12 +9,24 @@
 }
 
 .widget {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--surface) 86%, transparent);
-  box-shadow: 0 8px 26px rgb(15 23 42 / 10%);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  box-shadow:
+    0 8px 26px rgb(15 23 42 / 10%),
+    inset 0 1px 0 var(--glass-highlight);
   padding: 14px;
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(24px) saturate(180%);
+  transition:
+    transform 180ms ease-out,
+    box-shadow 180ms ease-out;
+}
+
+.widget:hover {
+  box-shadow:
+    0 14px 36px rgb(15 23 42 / 16%),
+    inset 0 1px 0 var(--glass-highlight);
+  transform: translateY(-2px);
 }
 
 .widget h2 {
