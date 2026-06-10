@@ -162,6 +162,18 @@ class Project(Base, UuidPrimaryKeyMixin, TimestampMixin):
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class ProjectLink(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    __tablename__ = "project_links"
+
+    project_id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False
+    )
+    type: Mapped[str] = mapped_column(String, nullable=False)
+    label: Mapped[str] = mapped_column(String, nullable=False)
+    url: Mapped[str] = mapped_column(Text, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+
 class GalleryItem(Base, UuidPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "gallery_items"
 

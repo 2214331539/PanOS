@@ -1,0 +1,120 @@
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 28%);
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition:
+    transform 120ms ease-out,
+    border-color 120ms ease-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+}
+
+.cover {
+  width: 100%;
+  height: 132px;
+  object-fit: cover;
+  display: block;
+}
+
+.coverFallback {
+  display: grid;
+  height: 132px;
+  place-items: center;
+  background: linear-gradient(145deg, rgb(16 185 129 / 20%), rgb(37 99 235 / 14%));
+  color: var(--text);
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.body {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.status {
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-weight: 700;
+}
+
+.concept,
+.paused,
+.archived {
+  background: rgb(127 127 127 / 16%);
+  color: var(--text-muted);
+}
+
+.prototype {
+  background: rgb(245 158 11 / 16%);
+  color: color-mix(in srgb, var(--warning) 78%, var(--text));
+}
+
+.building {
+  background: rgb(37 99 235 / 12%);
+  color: color-mix(in srgb, var(--primary) 88%, var(--text));
+}
+
+.launched {
+  background: rgb(16 185 129 / 14%);
+  color: color-mix(in srgb, var(--success) 80%, var(--text));
+}
+
+.name {
+  margin: 2px 0 0;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.tagline {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.tech {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover {
+    transform: none;
+  }
+}

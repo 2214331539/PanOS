@@ -1,33 +1,67 @@
-import { Briefcase, ExternalLink } from "lucide-react";
+import { Briefcase } from "lucide-react";
+import { useState } from "react";
 
 import { AppHeader } from "@/shared/ui/AppHeader";
-import { BadgeRow } from "@/shared/ui/BadgeRow";
-import { Button } from "@/shared/ui/Button";
-import { ContentLayout } from "@/shared/ui/ContentLayout";
+import { ContentLayout, SidebarButton } from "@/shared/ui/ContentLayout";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
-import { PROJECT_CATEGORIES } from "./data";
+import { useProjectCategories, useProjects } from "./api";
+import { ProjectCard } from "./ProjectCard";
+import { ProjectReader } from "./ProjectReader";
+import styles from "./ProjectsApp.module.css";
 
 export function ProjectsApp() {
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+
+  const { data: categories } = useProjectCategories();
+  const { data: projects, isLoading } = useProjects(activeCategory ?? undefined);
+
+  if (selectedSlug) {
+    return (
+      <ContentLayout>
+        <ProjectReader slug={selectedSlug} onBack={() => setSelectedSlug(null)} />
+      </ContentLayout>
+    );
+  }
+
+  const list = projects ?? [];
+
+  const sidebar = (
+    <>
+      <SidebarButton active={activeCategory === null} onClick={() => setActiveCategory(null)}>
+        All Projects
+      </SidebarButton>
+      {(categories ?? []).map((category) => (
+        <SidebarButton
+          key={category.id}
+          active={activeCategory === category.slug}
+          onClick={() => setActiveCategory(category.slug)}
+        >
+          {category.name}
+        </SidebarButton>
+      ))}
+    </>
+  );
+
   return (
-    <ContentLayout>
-      <AppHeader
-        eyebrow="Projects"
-        title="项目作品与产品实验"
-        action={
-          <Button variant="ghost" disabled>
-            <ExternalLink size={16} />
-            Demo
-          </Button>
-        }
-      />
-      <BadgeRow items={PROJECT_CATEGORIES} />
-      <EmptyState
-        inline
-        icon={<Briefcase size={30} />}
-        title="项目卡片系统已准备。"
-        description="后续会从 Projects API 展示封面、状态、技术栈、Demo、GitHub 和详情页。"
-      />
+    <ContentLayout sidebar={sidebar} sidebarLabel="Project categories">
+      <AppHeader eyebrow="Projects" title="项目作品与产品实验" />
+      {isLoading ? (
+        <p className={styles.hint}>加载中…</p>
+      ) : list.length === 0 ? (
+        <EmptyState
+          icon={<Briefcase size={30} />}
+          title="这里还没有项目。"
+          description="第一个正在构建的东西很快会出现在这里。"
+        />
+      ) : (
+        <div className={styles.grid}>
+          {list.map((project) => (
+            <ProjectCard key={project.id} project={project} onOpen={setSelectedSlug} />
+          ))}
+        </div>
+      )}
     </ContentLayout>
   );
 }

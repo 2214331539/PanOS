@@ -67,6 +67,10 @@ async function call<TData>(path: string, options: CallOptions = {}): Promise<Api
     throw new ApiError(response.status, message);
   }
 
+  if (response.status === 204) {
+    return { data: undefined as TData };
+  }
+
   return (await response.json()) as ApiEnvelope<TData>;
 }
 
