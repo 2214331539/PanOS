@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router";
 
 import { AdminLoginRoute } from "@/features/admin/AdminLoginRoute";
-import { RequireAuth } from "@/features/admin/RequireAuth";
+import { RequireAuth } from "@/features/auth/RequireAuth";
 import { ArticleDetailRoute } from "@/features/articles/ArticleDetailRoute";
 import { ArticleEditorRoute } from "@/features/articles/admin/ArticleEditorRoute";
 import { ArticleListRoute } from "@/features/articles/admin/ArticleListRoute";

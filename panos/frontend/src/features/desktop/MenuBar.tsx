@@ -1,7 +1,9 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Info, Mail, Monitor, RotateCcw, Search, Settings, SunMedium } from "lucide-react";
+import { Info, LogIn, LogOut, Mail, Monitor, RotateCcw, Search, Settings, SunMedium } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { LoginDialog } from "@/features/auth/LoginDialog";
+import { useAuthStore } from "@/shared/stores/auth-store";
 import { useThemeStore } from "@/shared/stores/theme-store";
 import { IconButton } from "@/shared/ui/Button";
 import { Tooltip } from "@/shared/ui/Tooltip";
@@ -26,6 +28,9 @@ export function MenuBar() {
   const openSpotlight = useSpotlightStore((state) => state.open);
   const cycleMode = useThemeStore((state) => state.cycleMode);
   const mode = useThemeStore((state) => state.mode);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const signOut = useAuthStore((state) => state.signOut);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   useEffect(() => {
     const id = window.setInterval(() => setClock(formatClock(new Date())), 30_000);
@@ -60,6 +65,21 @@ export function MenuBar() {
                 <Mail size={15} />
                 Contact Me
               </DropdownMenu.Item>
+              <DropdownMenu.Separator className={styles.dropdownSep} />
+              {isAuthenticated ? (
+                <DropdownMenu.Item className={styles.dropdownItem} onSelect={signOut}>
+                  <LogOut size={15} />
+                  退出登录
+                </DropdownMenu.Item>
+              ) : (
+                <DropdownMenu.Item
+                  className={styles.dropdownItem}
+                  onSelect={() => setLoginOpen(true)}
+                >
+                  <LogIn size={15} />
+                  登录
+                </DropdownMenu.Item>
+              )}
               <DropdownMenu.Item className={styles.dropdownItem} onSelect={restartIntro}>
                 <RotateCcw size={15} />
                 Restart Intro
@@ -83,6 +103,8 @@ export function MenuBar() {
         </Tooltip>
         <time className={styles.clock}>{clock}</time>
       </div>
+
+      <LoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
     </header>
   );
 }

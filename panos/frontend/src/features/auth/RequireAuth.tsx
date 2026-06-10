@@ -3,7 +3,7 @@ import { Navigate } from "react-router";
 
 import { useAuthStore } from "@/shared/stores/auth-store";
 
-// 未登录访问后台时跳转登录页。
+// 未登录访问后台时跳转登录页（深链兜底；首页登录走菜单栏弹窗）。
 export function RequireAuth({ children }: { children: ReactNode }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   if (!isAuthenticated) {

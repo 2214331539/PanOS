@@ -82,6 +82,12 @@
   outline: 0;
 }
 
+.dropdownSep {
+  height: 1px;
+  background: var(--border);
+  margin: 6px;
+}
+
 @media (max-width: 767px) {
   .menuBar {
     height: 44px;

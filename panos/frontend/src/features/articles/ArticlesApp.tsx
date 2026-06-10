@@ -2,6 +2,7 @@ import { FileText, PenLine } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
+import { useAuthStore } from "@/shared/stores/auth-store";
 import { AppHeader } from "@/shared/ui/AppHeader";
 import { Button } from "@/shared/ui/Button";
 import { ContentLayout, SidebarButton } from "@/shared/ui/ContentLayout";
@@ -34,6 +35,7 @@ function groupByMonth(articles: ArticleCardData[]): MonthGroup[] {
 
 export function ArticlesApp() {
   const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [view, setView] = useState<View>("category");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
@@ -86,16 +88,18 @@ export function ArticlesApp() {
           按时间
         </button>
       </div>
-      <Button
-        size="sm"
-        variant="secondary"
-        onClick={() => {
-          void navigate("/admin/articles");
-        }}
-      >
-        <PenLine size={15} />
-        写文章
-      </Button>
+      {isAuthenticated ? (
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => {
+            void navigate("/admin/articles");
+          }}
+        >
+          <PenLine size={15} />
+          写文章
+        </Button>
+      ) : null}
     </div>
   );
 
