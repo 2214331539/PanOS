@@ -8,6 +8,7 @@
     "web:lint": "pnpm --dir panos/frontend lint",
     "web:typecheck": "pnpm --dir panos/frontend typecheck",
     "web:test": "pnpm --dir panos/frontend test",
+    "web:test:e2e": "pnpm --dir panos/frontend test:e2e",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "api:migrate": "uv run --directory panos/backend alembic upgrade head",

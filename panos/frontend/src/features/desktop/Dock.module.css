@@ -79,6 +79,11 @@
 }
 
 @media (max-width: 767px) {
+  /* 移动端有全屏窗口时收起 Dock，避免遮挡窗口底部内容。 */
+  .hideOnMobile {
+    display: none;
+  }
+
   /* 移动端 Dock 横向滚动，保证所有 App 可达；项数少时仍居中（首末项 margin auto）。 */
   .dock {
     right: 12px;

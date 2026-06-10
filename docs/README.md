@@ -18,6 +18,7 @@
 | [06-API接口文档.md](/Users/admin/Research/PanOS/docs/06-API接口文档.md) | 固定前后端交互接口、请求响应格式和权限规则 |
 | [07-开发任务拆解文档.md](/Users/admin/Research/PanOS/docs/07-开发任务拆解文档.md) | 明确开发阶段、交付物、验收标准和优先级 |
 | [08-AIcoding约束文档.md](/Users/admin/Research/PanOS/docs/08-AIcoding约束文档.md) | 约束 AI 或人工开发时不得偏离技术栈、接口、UI 和文档 |
+| [09-部署文档.md](/Users/admin/Research/PanOS/docs/09-部署文档.md) | Vercel + Railway 部署步骤、环境变量清单和上线检查清单 |
 
 ## 文档优先级
 

@@ -126,7 +126,7 @@ export function DesktopShell() {
         </AnimatePresence>
       </section>
 
-      <Dock />
+      <Dock hideOnMobile={visibleWindows.length > 0} />
       <Spotlight />
     </main>
   );
