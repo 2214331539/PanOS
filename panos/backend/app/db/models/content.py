@@ -23,8 +23,10 @@ from app.db.models.enums import (
     AdminRole,
     ContactStatus,
     ContentStatus,
+    IdeaStatus,
     MediaType,
     ProjectStatus,
+    TimelineType,
     Visibility,
 )
 
@@ -162,6 +164,18 @@ class Project(Base, UuidPrimaryKeyMixin, TimestampMixin):
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class ProjectLink(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    __tablename__ = "project_links"
+
+    project_id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False
+    )
+    type: Mapped[str] = mapped_column(String, nullable=False)
+    label: Mapped[str] = mapped_column(String, nullable=False)
+    url: Mapped[str] = mapped_column(Text, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+
 class GalleryItem(Base, UuidPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "gallery_items"
 
@@ -207,6 +221,86 @@ class Widget(Base, UuidPrimaryKeyMixin, TimestampMixin):
     payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     is_enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+
+class Idea(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    """碎片想法 / 数字花园（V2）。"""
+
+    __tablename__ = "ideas"
+
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    body_mdx: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[IdeaStatus] = mapped_column(
+        Enum(IdeaStatus), default=IdeaStatus.seed, nullable=False
+    )
+    visibility: Mapped[Visibility] = mapped_column(
+        Enum(Visibility), default=Visibility.public, nullable=False
+    )
+    source: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_featured: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+
+class ResearchNote(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    """研究笔记（V2）。"""
+
+    __tablename__ = "research_notes"
+
+    slug: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    excerpt: Mapped[str] = mapped_column(Text, nullable=False)
+    body_mdx: Mapped[str] = mapped_column(Text, nullable=False)
+    category_id: Mapped[UUID | None] = mapped_column(
+        PG_UUID(as_uuid=True), ForeignKey("categories.id"), nullable=True
+    )
+    status: Mapped[ContentStatus] = mapped_column(
+        Enum(ContentStatus), default=ContentStatus.draft, nullable=False
+    )
+    visibility: Mapped[Visibility] = mapped_column(
+        Enum(Visibility), default=Visibility.public, nullable=False
+    )
+    progress: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    started_at: Mapped[date | None] = mapped_column(Date, nullable=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class TimelineEvent(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    """个人动态时间线（V2）。"""
+
+    __tablename__ = "timeline_events"
+
+    event_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    type: Mapped[TimelineType] = mapped_column(Enum(TimelineType), nullable=False)
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[Visibility] = mapped_column(
+        Enum(Visibility), default=Visibility.public, nullable=False
+    )
+    is_featured: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+
+class CalendarEvent(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    """桌面日历上的计划事项（站长维护，访客可见）。"""
+
+    __tablename__ = "calendar_events"
+
+    event_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(120), nullable=False)
+
+
+class PageView(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    """匿名浏览记录：每访客（ip 哈希）每路径每天最多记一条。"""
+
+    __tablename__ = "page_views"
+    __table_args__ = (
+        UniqueConstraint("path", "ip_hash", "view_date", name="uq_page_views_path_ip_date"),
+    )
+
+    path: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    ip_hash: Mapped[str] = mapped_column(String, nullable=False)
+    view_date: Mapped[date] = mapped_column(Date, nullable=False)
 
 
 class ContactMessage(Base, UuidPrimaryKeyMixin, TimestampMixin):

@@ -7,6 +7,10 @@
   backdrop-filter: blur(10px);
 }
 
+.backdrop[data-state="open"] {
+  animation: backdrop-in 180ms ease-out;
+}
+
 .panel {
   position: fixed;
   z-index: 1200;
@@ -14,11 +18,57 @@
   left: 50%;
   width: min(640px, calc(100vw - 24px));
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
   border-radius: 18px;
-  background: var(--surface-strong);
-  box-shadow: var(--shadow-window);
+  background: color-mix(in srgb, var(--surface-strong) 90%, transparent);
+  box-shadow:
+    var(--shadow-window),
+    inset 0 1px 0 var(--glass-highlight);
   transform: translateX(-50%);
+  backdrop-filter: blur(34px) saturate(180%);
+}
+
+/* macOS Spotlight 式出场：轻微缩放 + 上浮，快速利落。 */
+.panel[data-state="open"] {
+  animation: spotlight-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.panel[data-state="closed"] {
+  animation: spotlight-out 120ms ease-in;
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spotlight-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.96) translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1) translateY(0);
+  }
+}
+
+@keyframes spotlight-out {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.97);
+  }
 }
 
 .srOnly {
@@ -73,6 +123,20 @@
 /* 键盘 ↑↓ 与鼠标 hover 共用同一个高亮态（activeIndex 驱动）。 */
 .results button.active {
   background: rgb(37 99 235 / 12%);
+}
+
+/* 分组标题（应用 / 文章 / 项目 / 照片 / 链接）。 */
+.groupLabel {
+  margin: 6px 0 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0 8px;
+}
+
+.results > div > button {
+  width: 100%;
 }
 
 .results strong,

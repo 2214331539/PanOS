@@ -7,3 +7,17 @@ os.environ.setdefault("ADMIN_USERNAME", "test-admin")
 os.environ.setdefault("ADMIN_PASSWORD", "test-password")
 os.environ.setdefault("AUTH_SECRET", "test-secret")
 os.environ.setdefault("CONTACT_RATE_LIMIT_SECRET", "test-rate-limit-secret")
+
+import asyncio  # noqa: E402
+
+import pytest  # noqa: E402
+
+from app.db.session import engine  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def dispose_db_engine() -> object:
+    """TestClient 每个请求用独立事件循环；asyncpg 连接绑定创建时的循环，
+    测试结束后清空连接池，避免跨循环复用报 RuntimeError。"""
+    yield
+    asyncio.run(engine.dispose())

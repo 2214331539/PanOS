@@ -14,5 +14,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: "./src/shared/test/setup.ts",
+    // E2E（Playwright）的 *.spec.ts 不归 Vitest 跑
+    exclude: ["**/node_modules/**", "src/test/e2e/**"],
   },
 });

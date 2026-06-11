@@ -1,5 +1,5 @@
 import { FileText, PenLine } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { useAuthStore } from "@/shared/stores/auth-store";
@@ -8,7 +8,11 @@ import { Button } from "@/shared/ui/Button";
 import { ContentLayout, SidebarButton } from "@/shared/ui/ContentLayout";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
-import { type ArticleCard as ArticleCardData, useArticleCategories, useArticles } from "./api";
+import { useCategories } from "@/shared/lib/api/categories";
+
+import { useWindowStore } from "@/features/desktop/window-store";
+
+import { type ArticleCard as ArticleCardData, useArticles } from "./api";
 import { ArticleCard } from "./ArticleCard";
 import { ArticleReader } from "./ArticleReader";
 import styles from "./ArticlesApp.module.css";
@@ -40,7 +44,19 @@ export function ArticlesApp() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
 
-  const { data: categories } = useArticleCategories();
+  const payloadSlug = useWindowStore((state) => state.windows.articles?.payload?.slug);
+  const consumeWindowPayload = useWindowStore((state) => state.consumeWindowPayload);
+  // 渲染期间同步派生选中项（React 推荐的状态调整模式），payload 在 effect 中消费。
+  if (payloadSlug && payloadSlug !== selectedSlug) {
+    setSelectedSlug(payloadSlug);
+  }
+  useEffect(() => {
+    if (payloadSlug) {
+      consumeWindowPayload("articles");
+    }
+  }, [payloadSlug, consumeWindowPayload]);
+
+  const { data: categories } = useCategories("articles");
   const { data: articles, isLoading } = useArticles(
     view === "category" && activeCategory ? activeCategory : undefined,
   );

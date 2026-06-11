@@ -1,0 +1,148 @@
+.formCard {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-strong);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.formTitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field > span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 9px 12px;
+  font: inherit;
+  min-width: 0;
+}
+
+.field textarea {
+  font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.fullRow {
+  grid-column: 1 / -1;
+}
+
+.formActions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.error {
+  margin: 10px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.titleCell {
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.activeBadge,
+.inactiveBadge {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+}
+
+.activeBadge {
+  background: rgb(16 185 129 / 14%);
+  color: color-mix(in srgb, var(--success) 80%, var(--text));
+}
+
+.inactiveBadge {
+  background: rgb(127 127 127 / 16%);
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit,
+.delete {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0;
+}
+
+.edit {
+  color: var(--primary);
+}
+
+.delete {
+  color: var(--danger);
+}
+
+@media (max-width: 767px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}

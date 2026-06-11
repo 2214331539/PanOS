@@ -1,8 +1,9 @@
 import { X } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { useRef } from "react";
 
+import { cn } from "@/shared/lib/utils/classnames";
 import { Tooltip } from "@/shared/ui/Tooltip";
 
 import styles from "./WindowFrame.module.css";
@@ -24,6 +25,14 @@ function isMobileViewport(): boolean {
   return typeof window !== "undefined" && window.innerWidth < 768;
 }
 
+// 最小化时窗口顶部要沉到的纵向位移（相对当前 top，落点在 Dock 附近）。
+function minimizeSinkY(windowTop: number): number {
+  if (typeof window === "undefined") {
+    return 480;
+  }
+  return Math.max(160, window.innerHeight - windowTop - 120);
+}
+
 export function WindowFrame({
   children,
   windowState,
@@ -36,6 +45,8 @@ export function WindowFrame({
   const toggleMaximize = useWindowStore((state) => state.toggleMaximize);
   const focusWindow = useWindowStore((state) => state.focusWindow);
   const moveWindow = useWindowStore((state) => state.moveWindow);
+  const isActive = useWindowStore((state) => state.activeWindowId === windowState.id);
+  const reduceMotion = useReducedMotion();
 
   const frameRef = useRef<HTMLElement | null>(null);
   const drag = useRef<DragState | null>(null);
@@ -106,12 +117,39 @@ export function WindowFrame({
   return (
     <motion.article
       ref={frameRef}
-      className={windowState.isMaximized ? `${styles.frame} ${styles.maximized}` : styles.frame}
-      style={{ left: windowState.x, top: windowState.y, zIndex: windowState.zIndex }}
-      initial={{ opacity: 0, scale: 0.96, y: 16 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.98, y: 10 }}
-      transition={{ duration: 0.18, ease: "easeOut" }}
+      // layout：最大化/还原时让尺寸与位置以 FLIP 平滑过渡，而不是瞬间跳变。
+      layout
+      className={cn(
+        styles.frame,
+        windowState.isMaximized && styles.maximized,
+        !isActive && styles.inactive,
+      )}
+      style={{
+        left: windowState.x,
+        top: windowState.y,
+        zIndex: windowState.zIndex,
+        pointerEvents: windowState.isMinimized ? "none" : "auto",
+      }}
+      initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.92, y: 28 }}
+      // 最小化：缩小沉向 Dock（保持挂载）；恢复时从 Dock 弹回。
+      animate={
+        windowState.isMinimized
+          ? reduceMotion
+            ? { opacity: 0 }
+            : { opacity: 0, scale: 0.18, y: minimizeSinkY(windowState.y) }
+          : { opacity: 1, scale: 1, y: 0 }
+      }
+      exit={
+        reduceMotion
+          ? { opacity: 0 }
+          : { opacity: 0, scale: 0.94, y: 22, transition: { duration: 0.16, ease: "easeIn" } }
+      }
+      transition={
+        windowState.isMinimized
+          ? { duration: 0.34, ease: [0.4, 0, 0.7, 0.2] }
+          : { type: "spring", stiffness: 320, damping: 28, mass: 0.8 }
+      }
+      aria-hidden={windowState.isMinimized || undefined}
       onMouseDown={() => focusWindow(windowState.id)}
       aria-label={windowState.title}
     >

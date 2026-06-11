@@ -6,15 +6,17 @@
   left: max(16px, calc((100vw - 744px) / 2));
   display: flex;
   height: 76px;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   gap: 8px;
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  background: color-mix(in srgb, var(--surface) 86%, transparent);
-  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 var(--glass-highlight);
   padding: 8px 12px;
-  backdrop-filter: blur(22px);
+  backdrop-filter: blur(28px) saturate(180%);
 }
 
 .item {
@@ -22,51 +24,65 @@
   display: grid;
   width: 60px;
   height: 60px;
-  place-items: center;
+  align-items: end;
+  justify-items: center;
   border: 0;
   background: transparent;
   cursor: pointer;
+  padding: 0 0 6px;
 }
 
-.icon {
-  transition: transform 120ms ease-out;
+/* 缩放作用在内层包装上：transform-origin 钉在底部，放大时像从 Dock 里探出来；
+   运行点 .dot 留在按钮上不随图标缩放（与 macOS 一致）。 */
+.iconWrap {
+  position: relative;
+  display: inline-grid;
+  transform-origin: bottom center;
+  will-change: transform;
 }
 
-.item:hover .icon {
-  transform: translateY(-5px) scale(1.14);
-}
-
-.label {
-  position: absolute;
-  bottom: -7px;
-  overflow: hidden;
-  max-width: 68px;
-  color: var(--text);
-  font-size: 12px;
-  opacity: 0;
-  text-overflow: ellipsis;
-  transition: opacity 120ms ease-out;
-  white-space: nowrap;
-}
-
-.item:hover .label {
-  opacity: 1;
+/* 启动弹跳层：与 hover 缩放层分离，避免 transform 互相覆盖。 */
+.bounceWrap {
+  position: relative;
+  display: inline-grid;
 }
 
 .dot {
   position: absolute;
-  bottom: -4px;
+  bottom: 1px;
   width: 4px;
   height: 4px;
   border-radius: 999px;
   background: var(--text);
+  opacity: 0.85;
+}
+
+/* 内容 App 与系统区（废纸篓）之间的分隔线。 */
+.divider {
+  width: 1px;
+  height: 44px;
+  margin: 0 4px;
+  align-self: center;
+  background: var(--border);
+}
+
+/* 废纸篓：灰色金属质感圆角图标。 */
+.trash {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: linear-gradient(160deg, #b7bdc6, #8d939c);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 45%);
+  color: #fff;
 }
 
 /* 未上线的 App 直接在图标上标出阶段，点击前就能形成预期（tooltip 只在 hover 才可见）。 */
 .stage {
   position: absolute;
-  top: 0;
-  right: 2px;
+  top: -3px;
+  right: -5px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface-strong);
@@ -79,6 +95,11 @@
 }
 
 @media (max-width: 767px) {
+  /* 移动端有全屏窗口时收起 Dock，避免遮挡窗口底部内容。 */
+  .hideOnMobile {
+    display: none;
+  }
+
   /* 移动端 Dock 横向滚动，保证所有 App 可达；项数少时仍居中（首末项 margin auto）。 */
   .dock {
     right: 12px;
@@ -87,6 +108,7 @@
     height: 74px;
     gap: 2px;
     overflow-x: auto;
+    align-items: center;
     justify-content: flex-start;
     scrollbar-width: none;
   }
@@ -97,6 +119,8 @@
 
   .item {
     flex: 0 0 54px;
+    align-items: center;
+    padding-bottom: 0;
   }
 
   .item:first-child {
@@ -106,10 +130,12 @@
   .item:last-child {
     margin-inline-end: auto;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .item:hover .icon {
-    transform: none;
+  .item:active .iconWrap {
+    transform: scale(0.9);
+  }
+
+  .dot {
+    bottom: -3px;
   }
 }

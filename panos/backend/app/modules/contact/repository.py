@@ -1,9 +1,10 @@
-from uuid import uuid4
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.contact.schemas import ContactCreate, ContactCreated
+from app.db.models.content import ContactMessage
 
 
-async def create_contact_message(payload: ContactCreate) -> ContactCreated:
-    _ = payload
-    return ContactCreated(id=str(uuid4()), status="new")
-
+async def persist(session: AsyncSession, message: ContactMessage) -> ContactMessage:
+    session.add(message)
+    await session.commit()
+    await session.refresh(message)
+    return message

@@ -1,0 +1,161 @@
+/* 后台「行内表单 + 列表」类管理页的共享样式（ideas / research / timeline 等）。 */
+
+.formCard {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-strong);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.formTitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field > span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 9px 12px;
+  font: inherit;
+  min-width: 0;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.mono textarea {
+  font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+.fullRow {
+  grid-column: 1 / -1;
+}
+
+.formActions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.error {
+  margin: 10px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.titleCell {
+  font-weight: 700;
+}
+
+.sub {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border: 0;
+  background: rgb(127 127 127 / 16%);
+  color: var(--text-muted);
+}
+
+.badgeOn {
+  background: rgb(16 185 129 / 14%);
+  color: color-mix(in srgb, var(--success) 80%, var(--text));
+}
+
+button.badge {
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit,
+.delete {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0;
+}
+
+.edit {
+  color: var(--primary);
+}
+
+.delete {
+  color: var(--danger);
+}
+
+@media (max-width: 767px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}

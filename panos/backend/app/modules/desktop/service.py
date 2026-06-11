@@ -23,8 +23,8 @@ def get_desktop_bootstrap() -> DesktopBootstrapSchema:
         ),
         wallpaper=WallpaperSchema(
             type="image",
-            url="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=2400&q=80",
-            alt="PanOS desktop wallpaper",
+            url="https://images.unsplash.com/photo-1568507058983-7e7fc6682ab8?q=80&w=2560&h=1440&fit=crop",
+            alt="Kelingking cliff, Nusa Penida, Indonesia",
         ),
         widgets=[
             WidgetSchema(

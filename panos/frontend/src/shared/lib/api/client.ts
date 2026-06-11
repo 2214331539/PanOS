@@ -6,7 +6,7 @@ export interface ApiEnvelope<TData> {
   meta?: Record<string, unknown>;
 }
 
-export class ApiError extends Error {
+class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
@@ -65,6 +65,10 @@ async function call<TData>(path: string, options: CallOptions = {}): Promise<Api
       /* ignore non-JSON error bodies */
     }
     throw new ApiError(response.status, message);
+  }
+
+  if (response.status === 204) {
+    return { data: undefined as TData };
   }
 
   return (await response.json()) as ApiEnvelope<TData>;

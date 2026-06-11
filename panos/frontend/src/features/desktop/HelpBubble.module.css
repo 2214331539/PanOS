@@ -1,0 +1,121 @@
+.root {
+  position: fixed;
+  z-index: 950;
+  right: 20px;
+  bottom: 108px;
+}
+
+/* 问号悬浮球：毛玻璃圆球，与 Dock 同一套质感。 */
+.bubble {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 var(--glass-highlight);
+  color: var(--text-muted);
+  cursor: pointer;
+  backdrop-filter: blur(24px) saturate(180%);
+}
+
+.bubble:hover {
+  color: var(--text);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.panel {
+  position: absolute;
+  right: 0;
+  bottom: 54px;
+  width: 286px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 var(--glass-highlight);
+  padding: 14px 16px;
+  backdrop-filter: blur(28px) saturate(180%);
+  transform-origin: bottom right;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.panelHead h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(127 127 127 / 12%);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--text);
+}
+
+.list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12.5px;
+}
+
+.list kbd {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: rgb(127 127 127 / 10%);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.list span {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 767px) {
+  /* 快捷键是桌面端概念，移动端隐藏。 */
+  .root {
+    display: none;
+  }
+}

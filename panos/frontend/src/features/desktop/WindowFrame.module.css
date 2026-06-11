@@ -6,17 +6,35 @@
 .frame {
   position: absolute;
   display: flex;
-  width: min(880px, calc(100vw - 48px));
-  height: min(620px, calc(100% - 32px));
+  width: min(1080px, calc(100vw - 48px));
+  height: min(720px, calc(100% - 32px));
   max-height: calc(100% - 24px);
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 18px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
   background: var(--surface);
-  box-shadow: var(--shadow-window);
+  box-shadow:
+    var(--shadow-window),
+    inset 0 1px 0 var(--glass-highlight);
   pointer-events: auto;
-  backdrop-filter: blur(26px);
+  backdrop-filter: blur(30px) saturate(180%);
+  transition: box-shadow 200ms ease-out;
+}
+
+/* 失焦窗口：阴影收浅、标题变灰、红绿灯置灰（macOS 的前后台窗口区分）。 */
+.inactive {
+  box-shadow:
+    var(--shadow-window-inactive),
+    inset 0 1px 0 var(--glass-highlight);
+}
+
+.inactive .titlebar h2 {
+  color: var(--text-muted);
+}
+
+.inactive .control {
+  background: var(--traffic-inactive);
 }
 
 /* 最大化：用 !important 覆盖内联 left/top，铺满安全区。 */
@@ -60,22 +78,71 @@
 }
 
 .control {
+  position: relative;
+  display: grid;
   width: 13px;
   height: 13px;
   border: 1px solid rgb(0 0 0 / 12%);
   border-radius: 999px;
   cursor: pointer;
+  place-items: center;
+  padding: 0;
+  transition: background-color 160ms ease-out;
+}
+
+/* macOS 行为：光标进入红绿灯区域时三颗一起显示符号。 */
+.control::before {
+  color: rgb(0 0 0 / 55%);
+  content: "";
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.controls:hover .control::before {
+  opacity: 1;
 }
 
 .controlClose {
   background: #ff5f57;
 }
 
+.controlClose::before {
+  content: "×";
+}
+
 .controlMinimize {
   background: #febc2e;
 }
 
+.controlMinimize::before {
+  content: "−";
+}
+
 .controlMaximize {
+  background: #28c840;
+}
+
+.controlMaximize::before {
+  content: "+";
+}
+
+.control:active {
+  filter: brightness(0.82);
+}
+
+/* 失焦窗口 hover 红绿灯区域时恢复彩色（macOS 行为）。 */
+.inactive .controls:hover .controlClose {
+  background: #ff5f57;
+}
+
+.inactive .controls:hover .controlMinimize {
+  background: #febc2e;
+}
+
+.inactive .controls:hover .controlMaximize {
   background: #28c840;
 }
 

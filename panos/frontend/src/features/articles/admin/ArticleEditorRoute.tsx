@@ -4,11 +4,11 @@ import { useNavigate, useParams } from "react-router";
 import { AdminLayout } from "@/features/admin/AdminLayout";
 import { Button } from "@/shared/ui/Button";
 
-import { useArticleCategories } from "../api";
+import { useCategories } from "@/shared/lib/api/categories";
 import { type AdminArticleDetail, type ArticleStatus, useAdminArticle, useSaveArticle } from "./api";
 import styles from "./ArticleEditorRoute.module.css";
 
-const MarkdownEditor = lazy(() => import("./MarkdownEditor"));
+const MarkdownEditor = lazy(() => import("@/shared/markdown/MarkdownEditor"));
 
 export function ArticleEditorRoute() {
   const { id } = useParams();
@@ -28,7 +28,7 @@ export function ArticleEditorRoute() {
 
 function EditorForm({ existing }: { existing?: AdminArticleDetail }) {
   const navigate = useNavigate();
-  const { data: categories } = useArticleCategories();
+  const { data: categories } = useCategories("articles");
   const save = useSaveArticle();
 
   const [title, setTitle] = useState(existing?.title ?? "");

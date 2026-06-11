@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import apply_no_store, apply_public_cache
-from app.core.security import AdminPrincipal, require_admin_user
+from app.core.security import require_admin_user
 from app.db.models.enums import ContentStatus
 from app.db.session import get_session
 from app.modules.articles import service
@@ -14,10 +14,13 @@ from app.modules.articles.schemas import (
     ArticleCardSchema,
     ArticleDetailSchema,
 )
+from app.modules.views import service as views_service
 from app.schemas.responses import DataEnvelope
 
 public_router = APIRouter(prefix="/articles", tags=["articles"])
-admin_router = APIRouter(prefix="/admin/articles", tags=["admin"])
+admin_router = APIRouter(
+    dependencies=[Depends(require_admin_user)], prefix="/admin/articles", tags=["admin"]
+)
 
 
 @public_router.get("", response_model=DataEnvelope[list[ArticleCardSchema]])
@@ -50,7 +53,8 @@ async def get_article(
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[ArticleDetailSchema]:
     data = await service.get_article(session, slug)
-    apply_public_cache(response, f"article:{slug}:{data.published_at}")
+    data.view_count = await views_service.count_for_path(session, f"/articles/{slug}")
+    apply_public_cache(response, f"article:{slug}:{data.published_at}:{data.view_count}")
     return DataEnvelope(data=data)
 
 
@@ -60,7 +64,6 @@ async def admin_list_articles(
     status_filter: ContentStatus | None = Query(default=None, alias="status"),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[list[AdminArticleListItem]]:
     apply_no_store(response)
@@ -74,7 +77,6 @@ async def admin_list_articles(
 async def admin_get_article(
     article_id: str,
     response: Response,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[AdminArticleDetail]:
     apply_no_store(response)
@@ -86,7 +88,6 @@ async def admin_get_article(
 )
 async def admin_create_article(
     payload: AdminArticleCreate,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[AdminArticleDetail]:
     return DataEnvelope(data=await service.create_article(session, payload))
@@ -96,7 +97,6 @@ async def admin_create_article(
 async def admin_update_article(
     article_id: str,
     payload: AdminArticleUpdate,
-    _: AdminPrincipal = Depends(require_admin_user),
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[AdminArticleDetail]:
     return DataEnvelope(data=await service.update_article(session, article_id, payload))

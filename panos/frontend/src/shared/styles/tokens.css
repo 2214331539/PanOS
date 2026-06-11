@@ -17,7 +17,13 @@
   --warning: #f59e0b;
   --danger: #f43f5e;
   --shadow-window: 0 24px 80px rgb(15 23 42 / 24%);
+  --shadow-window-inactive: 0 10px 32px rgb(15 23 42 / 14%);
   --shadow-soft: 0 16px 40px rgb(15 23 42 / 14%);
+
+  /* 玻璃拟态：高光描边模拟 macOS 毛玻璃面板的顶部受光。 */
+  --glass-border: rgb(255 255 255 / 45%);
+  --glass-highlight: rgb(255 255 255 / 55%);
+  --traffic-inactive: #c9c9c9;
   font-family: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
 }
 
@@ -36,5 +42,9 @@
   --warning: #fbbf24;
   --danger: #fb7185;
   --shadow-window: 0 24px 90px rgb(0 0 0 / 44%);
+  --shadow-window-inactive: 0 10px 36px rgb(0 0 0 / 30%);
   --shadow-soft: 0 18px 48px rgb(0 0 0 / 28%);
+  --glass-border: rgb(255 255 255 / 14%);
+  --glass-highlight: rgb(255 255 255 / 10%);
+  --traffic-inactive: #5a5a60;
 }

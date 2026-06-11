@@ -1,12 +1,13 @@
-import { ArrowLeft, Check, Clock, Link2 } from "lucide-react";
+import { ArrowLeft, Check, Clock, Eye, Link2 } from "lucide-react";
 import { lazy, Suspense, useState } from "react";
 
+import { useRecordView } from "@/shared/lib/api/views";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
 import { useArticle } from "./api";
 import styles from "./ArticleReader.module.css";
 
-const ArticleBody = lazy(() => import("./ArticleBody"));
+const MarkdownBody = lazy(() => import("@/shared/markdown/MarkdownBody"));
 
 function formatDate(iso: string | null): string {
   return iso ? iso.slice(0, 10) : "";
@@ -25,6 +26,7 @@ export function ArticleReader({
 }) {
   const { data, isLoading, isError } = useArticle(slug);
   const [copied, setCopied] = useState(false);
+  useRecordView(slug ? `/articles/${slug}` : null);
 
   function share() {
     const url = `${window.location.origin}/articles/${slug}`;
@@ -72,12 +74,17 @@ export function ArticleReader({
             <Clock size={13} style={{ verticalAlign: "-2px" }} /> {data.readingMinutes} min
           </span>
         ) : null}
+        {data.viewCount > 0 ? (
+          <span>
+            <Eye size={13} style={{ verticalAlign: "-2px" }} /> {data.viewCount} 次阅读
+          </span>
+        ) : null}
       </div>
       <h1 className={styles.title}>{data.title}</h1>
       <p className={styles.excerpt}>{data.excerpt}</p>
 
       <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
-        <ArticleBody content={data.bodyMdx} />
+        <MarkdownBody content={data.bodyMdx} />
       </Suspense>
 
       {data.previous || data.next ? (

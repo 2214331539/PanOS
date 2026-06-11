@@ -1,0 +1,115 @@
+.timeline {
+  display: grid;
+  gap: 24px;
+  margin-top: 18px;
+}
+
+.monthLabel {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.events {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 2px solid var(--border);
+  margin-left: 13px;
+}
+
+.event {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 0 0 18px 16px;
+}
+
+.event:last-child {
+  padding-bottom: 4px;
+}
+
+.marker {
+  position: absolute;
+  left: -15px;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid var(--bg);
+  color: #fff;
+}
+
+.research {
+  background: var(--secondary);
+}
+
+.project {
+  background: var(--success);
+}
+
+.writing {
+  background: var(--primary);
+}
+
+.content {
+  background: var(--warning);
+}
+
+.life {
+  background: var(--danger);
+}
+
+.eventBody {
+  grid-column: 2;
+  min-width: 0;
+  padding-top: 3px;
+}
+
+.eventHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.eventHead strong {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.eventHead a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.eventHead a:hover {
+  text-decoration: underline;
+}
+
+.date {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.eventBody p {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.hint {
+  margin-top: 24px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
