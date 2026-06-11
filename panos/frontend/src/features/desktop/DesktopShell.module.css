@@ -42,41 +42,6 @@
   background: linear-gradient(to bottom, rgb(4 8 19 / 42%), rgb(4 8 19 / 70%));
 }
 
-/* 无窗口时的中央幽灵提示：延迟淡入，不抢戏。 */
-.ghostHint {
-  position: fixed;
-  z-index: 5;
-  top: 46%;
-  left: 50%;
-  margin: 0;
-  transform: translate(-50%, -50%);
-  color: rgb(255 255 255 / 72%);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-shadow: 0 1px 6px rgb(0 0 0 / 45%);
-  animation: ghost-in 600ms ease-out 1.2s both;
-  pointer-events: none;
-}
-
-@keyframes ghost-in {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -46%);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-}
-
-@media (max-width: 767px) {
-  .ghostHint {
-    display: none;
-  }
-}
-
 .windowLayer {
   position: fixed;
   z-index: 100;

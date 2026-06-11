@@ -174,3 +174,16 @@ test("V2 三个 App 渲染真实内容", async ({ page, isMobile }) => {
   await openApp(page, isMobile, "Timeline");
   await expect(page.getByText("PanOS 完成 V1 全部功能")).toBeVisible();
 });
+
+test("右下角问号悬浮球展示快捷键说明", async ({ page, isMobile }) => {
+  test.skip(isMobile, "快捷键说明仅桌面端展示");
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "快捷键说明" }).click();
+  const panel = page.getByRole("dialog", { name: "快捷键说明" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByText("Spotlight 搜索全站内容")).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(panel).toBeHidden();
+});

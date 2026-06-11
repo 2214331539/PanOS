@@ -14,6 +14,7 @@ import { DesktopContextMenu } from "./DesktopContextMenu";
 import { DesktopIcons } from "./DesktopIcons";
 import styles from "./DesktopShell.module.css";
 import { Dock } from "./Dock";
+import { HelpBubble } from "./HelpBubble";
 import { MenuBar } from "./MenuBar";
 import { Spotlight } from "./Spotlight";
 import { StickyNotes } from "./StickyNotes";
@@ -157,12 +158,6 @@ export function DesktopShell() {
         </div>
       </section>
 
-      {visibleCount === 0 ? (
-        <p className={styles.ghostHint} aria-hidden="true">
-          双击桌面图标打开内容，或按 ⌘K 搜索
-        </p>
-      ) : null}
-
       <section className={styles.windowLayer} aria-label="Open PanOS windows">
         <AnimatePresence>
           {openWindows.map((windowState) => (
@@ -174,6 +169,7 @@ export function DesktopShell() {
       </section>
 
       <Dock hideOnMobile={visibleCount > 0} />
+      <HelpBubble />
       <Spotlight />
       {contextMenu ? (
         <DesktopContextMenu position={contextMenu} onClose={() => setContextMenu(null)} />
