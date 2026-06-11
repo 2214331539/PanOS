@@ -9,6 +9,9 @@ const NAV_ITEMS = [
   { to: "/admin/articles", label: "文章" },
   { to: "/admin/projects", label: "项目" },
   { to: "/admin/gallery", label: "图库" },
+  { to: "/admin/ideas", label: "想法" },
+  { to: "/admin/research", label: "研究" },
+  { to: "/admin/timeline", label: "时间线" },
   { to: "/admin/links", label: "链接" },
   { to: "/admin/widgets", label: "Widget" },
 ];

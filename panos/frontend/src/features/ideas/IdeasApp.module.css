@@ -1,0 +1,99 @@
+.stages {
+  display: grid;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+.stageHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.stageBadge {
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 3px 12px;
+}
+
+.seed {
+  background: rgb(245 158 11 / 16%);
+  color: color-mix(in srgb, var(--warning) 78%, var(--text));
+}
+
+.growing {
+  background: rgb(16 185 129 / 14%);
+  color: color-mix(in srgb, var(--success) 80%, var(--text));
+}
+
+.draft {
+  background: rgb(37 99 235 / 12%);
+  color: color-mix(in srgb, var(--primary) 88%, var(--text));
+}
+
+.built {
+  background: rgb(124 58 237 / 12%);
+  color: color-mix(in srgb, var(--secondary) 82%, var(--text));
+}
+
+.stageHint {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 28%);
+  padding: 14px 16px;
+  transition:
+    transform 120ms ease-out,
+    border-color 120ms ease-out;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  transform: translateY(-2px);
+}
+
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.source {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hint {
+  margin-top: 24px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover {
+    transform: none;
+  }
+}

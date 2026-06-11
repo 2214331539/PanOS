@@ -9,6 +9,9 @@ import { ArticleListRoute } from "@/features/articles/admin/ArticleListRoute";
 import { DesktopShell } from "@/features/desktop/DesktopShell";
 import { WidgetsAdminRoute } from "@/features/desktop/admin/WidgetsAdminRoute";
 import { GalleryAdminRoute } from "@/features/gallery/admin/GalleryAdminRoute";
+import { IdeasAdminRoute } from "@/features/ideas/admin/IdeasAdminRoute";
+import { ResearchAdminRoute } from "@/features/research/admin/ResearchAdminRoute";
+import { TimelineAdminRoute } from "@/features/timeline/admin/TimelineAdminRoute";
 import { LinksAdminRoute } from "@/features/links/admin/LinksAdminRoute";
 import { ProjectDetailRoute } from "@/features/projects/ProjectDetailRoute";
 import { ProjectEditorRoute } from "@/features/projects/admin/ProjectEditorRoute";
@@ -38,6 +41,9 @@ export function App() {
       <Route path="/admin/gallery" element={guarded(<GalleryAdminRoute />)} />
       <Route path="/admin/links" element={guarded(<LinksAdminRoute />)} />
       <Route path="/admin/widgets" element={guarded(<WidgetsAdminRoute />)} />
+      <Route path="/admin/ideas" element={guarded(<IdeasAdminRoute />)} />
+      <Route path="/admin/research" element={guarded(<ResearchAdminRoute />)} />
+      <Route path="/admin/timeline" element={guarded(<TimelineAdminRoute />)} />
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

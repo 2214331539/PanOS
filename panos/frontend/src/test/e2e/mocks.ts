@@ -121,6 +121,52 @@ export async function mockPublicApi(page: Page): Promise<void> {
   await page.route(/\/api\/views\/summary$/, (route) =>
     route.fulfill({ json: envelope({ total: 128, today: 6 }) }),
   );
+  await page.route(/\/api\/ideas$/, (route) =>
+    route.fulfill({
+      json: envelope([
+        {
+          id: "i1",
+          title: "给 Agent 做一个遗忘曲线",
+          summary: "记忆不该只增不减。",
+          bodyMdx: null,
+          status: "seed",
+          source: null,
+          isFeatured: false,
+          createdAt: "2026-06-01T00:00:00Z",
+        },
+      ]),
+    }),
+  );
+  await page.route(/\/api\/research$/, (route) =>
+    route.fulfill({
+      json: envelope([
+        {
+          id: "r1",
+          slug: "agent-memory-retrieval",
+          title: "Agent 记忆检索策略对比",
+          excerpt: "三种检索策略的表现差异。",
+          progress: 60,
+          startedAt: "2026-04-10",
+          publishedAt: "2026-06-01T00:00:00Z",
+        },
+      ]),
+    }),
+  );
+  await page.route(/\/api\/timeline(\?.*)?$/, (route) =>
+    route.fulfill({
+      json: envelope([
+        {
+          id: "t1",
+          date: "2026-06-10",
+          type: "project",
+          title: "PanOS 完成 V1 全部功能",
+          description: "桌面、内容、后台全部就绪。",
+          url: null,
+          isFeatured: false,
+        },
+      ]),
+    }),
+  );
   await page.route(/\/api\/search\?.*$/, (route) =>
     route.fulfill({
       json: envelope([

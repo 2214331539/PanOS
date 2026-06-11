@@ -217,3 +217,31 @@ def test_search_aggregates_types() -> None:
 def test_search_requires_query() -> None:
     assert client.get("/api/search").status_code == 422
     assert client.get("/api/search?q=").status_code == 422
+
+
+def test_v2_public_endpoints() -> None:
+    with TestClient(app) as c:
+        ideas = c.get("/api/ideas")
+        assert ideas.status_code == 200
+        assert {item["status"] for item in ideas.json()["data"]} >= {"seed", "built"}
+
+        research = c.get("/api/research")
+        assert research.status_code == 200
+        slugs = [item["slug"] for item in research.json()["data"]]
+        assert "agent-memory-retrieval" in slugs
+
+        detail = c.get("/api/research/agent-memory-retrieval")
+        assert detail.status_code == 200
+        assert detail.json()["data"]["bodyMdx"]
+
+        timeline = c.get("/api/timeline")
+        assert timeline.status_code == 200
+        assert timeline.json()["data"][0]["date"] >= timeline.json()["data"][-1]["date"]
+
+        filtered = c.get("/api/timeline?type=research")
+        assert {item["type"] for item in filtered.json()["data"]} == {"research"}
+
+
+def test_v2_admin_guards() -> None:
+    for path in ("/api/admin/ideas", "/api/admin/research", "/api/admin/timeline"):
+        assert client.get(path).status_code == 401

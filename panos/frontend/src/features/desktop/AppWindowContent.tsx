@@ -23,8 +23,12 @@ const ContactApp = lazy(() =>
 const PreferencesApp = lazy(() =>
   import("@/features/preferences/PreferencesApp").then((m) => ({ default: m.PreferencesApp })),
 );
-const ComingSoonApp = lazy(() =>
-  import("@/features/coming-soon/ComingSoonApp").then((m) => ({ default: m.ComingSoonApp })),
+const IdeasApp = lazy(() => import("@/features/ideas/IdeasApp").then((m) => ({ default: m.IdeasApp })));
+const ResearchApp = lazy(() =>
+  import("@/features/research/ResearchApp").then((m) => ({ default: m.ResearchApp })),
+);
+const TimelineApp = lazy(() =>
+  import("@/features/timeline/TimelineApp").then((m) => ({ default: m.TimelineApp })),
 );
 
 // id → 组件 的注册表；新增 App 只需在此登记一行。
@@ -37,9 +41,9 @@ const REGISTRY: Record<WindowAppId, ComponentType> = {
   links: LinksApp,
   contact: ContactApp,
   preferences: PreferencesApp,
-  ideas: () => <ComingSoonApp title="Ideas" stage="V2" />,
-  research: () => <ComingSoonApp title="Research" stage="V2" />,
-  timeline: () => <ComingSoonApp title="Timeline" stage="V2" />,
+  ideas: IdeasApp,
+  research: ResearchApp,
+  timeline: TimelineApp,
 };
 
 export function AppWindowContent({ id }: { id: WindowAppId }) {

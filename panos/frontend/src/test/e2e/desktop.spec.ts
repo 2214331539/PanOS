@@ -150,3 +150,25 @@ test("Spotlight 全文搜索可直达文章", async ({ page, isMobile }) => {
 
   await expect(page.getByRole("heading", { name: "Agent Memory 的核心价值" })).toBeVisible();
 });
+
+test("V2 三个 App 渲染真实内容", async ({ page, isMobile }) => {
+  await page.goto("/");
+
+  // 移动端窗口全屏，切换 App 前需关闭当前窗口让出主屏网格。
+  async function closeIfMobile(title: string) {
+    if (isMobile) {
+      await page.getByRole("button", { name: `Close ${title}` }).click();
+    }
+  }
+
+  await openApp(page, isMobile, "Ideas");
+  await expect(page.getByText("给 Agent 做一个遗忘曲线")).toBeVisible();
+  await closeIfMobile("Ideas");
+
+  await openApp(page, isMobile, "Research");
+  await expect(page.getByText("Agent 记忆检索策略对比")).toBeVisible();
+  await closeIfMobile("Research");
+
+  await openApp(page, isMobile, "Timeline");
+  await expect(page.getByText("PanOS 完成 V1 全部功能")).toBeVisible();
+});

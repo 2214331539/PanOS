@@ -47,11 +47,11 @@ interface SystemAppDefinition {
 export const DOCK_APPS: readonly DockAppDefinition[] = [
   { id: "about", title: "About", heading: "About This Pan", label: "关于我", kind: "content", accent: "cyan", icon: User },
   { id: "articles", title: "Articles", heading: "Articles", label: "文章", kind: "content", accent: "blue", icon: FileText },
-  { id: "ideas", title: "Ideas", heading: "Ideas", label: "想法", kind: "content", accent: "amber", icon: Lightbulb, stage: "V2" },
+  { id: "ideas", title: "Ideas", heading: "Ideas", label: "想法", kind: "content", accent: "amber", icon: Lightbulb },
   { id: "projects", title: "Projects", heading: "Projects", label: "项目", kind: "content", accent: "emerald", icon: Briefcase },
   { id: "gallery", title: "Gallery", heading: "Gallery", label: "相册", kind: "content", accent: "rose", icon: Image },
-  { id: "research", title: "Research", heading: "Research", label: "研究", kind: "content", accent: "violet", icon: Atom, stage: "V2" },
-  { id: "timeline", title: "Timeline", heading: "Timeline", label: "时间线", kind: "content", accent: "slate", icon: Clock, stage: "V2" },
+  { id: "research", title: "Research", heading: "Research", label: "研究", kind: "content", accent: "violet", icon: Atom },
+  { id: "timeline", title: "Timeline", heading: "Timeline", label: "时间线", kind: "content", accent: "slate", icon: Clock },
   { id: "links", title: "Links", heading: "Links", label: "链接", kind: "content", accent: "lime", icon: Link },
   { id: "contact", title: "Contact", heading: "Contact", label: "联系", kind: "content", accent: "red", icon: Mail },
 ];

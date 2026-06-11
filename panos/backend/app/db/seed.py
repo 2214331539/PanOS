@@ -17,14 +17,24 @@ from app.db.models.content import (
     CalendarEvent,
     Category,
     GalleryItem,
+    Idea,
     MediaAsset,
     Project,
     ProjectLink,
+    ResearchNote,
     SiteSetting,
     SocialLink,
+    TimelineEvent,
     Widget,
 )
-from app.db.models.enums import ContentStatus, MediaType, ProjectStatus, Visibility
+from app.db.models.enums import (
+    ContentStatus,
+    IdeaStatus,
+    MediaType,
+    ProjectStatus,
+    TimelineType,
+    Visibility,
+)
 from app.db.session import async_session_factory
 from app.modules.articles.service import reading_minutes
 
@@ -264,6 +274,58 @@ SAMPLE_CALENDAR: list[tuple[date, str]] = [
     (date(2026, 6, 20), "PanOS 上线部署"),
 ]
 
+SAMPLE_IDEAS: list[tuple[str, str, IdeaStatus]] = [
+    ("给 Agent 做一个遗忘曲线", "记忆不该只增不减，按访问频率和时间做衰减。", IdeaStatus.seed),
+    (
+        "PanOS 的 Terminal App",
+        "用命令行探索整个站点：ls projects、cat about.md。",
+        IdeaStatus.growing,
+    ),
+    ("个人网站的「开机体验」", "进入网站像开机：logo、进度条、然后桌面亮起。", IdeaStatus.draft),
+    ("把个人网站做成操作系统", "PanOS 本身——这个想法已经被做出来了。", IdeaStatus.built),
+]
+
+class ResearchSeed(TypedDict):
+    slug: str
+    title: str
+    excerpt: str
+    body_mdx: str
+    progress: int
+    started_at: date
+
+
+SAMPLE_RESEARCH: list[ResearchSeed] = [
+    {
+        "slug": "agent-memory-retrieval",
+        "title": "Agent 记忆检索策略对比",
+        "excerpt": "向量检索、关键词、混合检索在长程任务中的表现差异。",
+        "body_mdx": "## 实验设置\n\n对比三种检索策略在 100 轮对话任务中的记忆命中率。\n",
+        "progress": 60,
+        "started_at": date(2026, 4, 10),
+    },
+    {
+        "slug": "memory-forgetting-curve",
+        "title": "记忆遗忘机制",
+        "excerpt": "什么样的记忆应该被淡忘：访问频率、时间衰减与重要度评分。",
+        "body_mdx": "## 问题\n\n记忆库只增不减会让检索越来越差。\n",
+        "progress": 25,
+        "started_at": date(2026, 5, 20),
+    },
+]
+
+SAMPLE_TIMELINE: list[tuple[date, TimelineType, str, str | None]] = [
+    (
+        date(2026, 6, 10),
+        TimelineType.project,
+        "PanOS 完成 V1 全部功能",
+        "桌面、内容、后台、测试、部署配置全部就绪。",
+    ),
+    (date(2026, 6, 6), TimelineType.writing, "发布《Agent Memory 的核心价值》", None),
+    (date(2026, 5, 20), TimelineType.research, "启动记忆遗忘机制研究", "从遗忘曲线开始。"),
+    (date(2026, 5, 8), TimelineType.life, "整理个人创作空间", "把散落各处的想法收进一个系统。"),
+    (date(2026, 4, 10), TimelineType.research, "启动 Agent 记忆检索研究", None),
+]
+
 SAMPLE_WIDGETS: list[dict[str, object]] = [
     {"type": "clock", "title": "Clock", "payload": {}},
     {
@@ -444,6 +506,43 @@ async def main() -> None:
                     sort_order=widget_sort,
                 )
             )
+
+        # V2：想法 / 研究笔记 / 时间线（均按标题或 slug 幂等）
+        for idea_title, idea_summary, idea_status in SAMPLE_IDEAS:
+            if await session.scalar(select(Idea).where(Idea.title == idea_title)) is None:
+                session.add(
+                    Idea(title=idea_title, summary=idea_summary, status=idea_status)
+                )
+
+        for research_item in SAMPLE_RESEARCH:
+            exists_note = await session.scalar(
+                select(ResearchNote).where(ResearchNote.slug == research_item["slug"])
+            )
+            if exists_note is None:
+                session.add(
+                    ResearchNote(
+                        slug=research_item["slug"],
+                        title=research_item["title"],
+                        excerpt=research_item["excerpt"],
+                        body_mdx=research_item["body_mdx"],
+                        status=ContentStatus.published,
+                        visibility=Visibility.public,
+                        progress=research_item["progress"],
+                        started_at=research_item["started_at"],
+                        published_at=datetime(2026, 6, 1, tzinfo=UTC),
+                    )
+                )
+
+        for tl_date, tl_type, tl_title, tl_desc in SAMPLE_TIMELINE:
+            exists_tl = await session.scalar(
+                select(TimelineEvent).where(TimelineEvent.title == tl_title)
+            )
+            if exists_tl is None:
+                session.add(
+                    TimelineEvent(
+                        event_date=tl_date, type=tl_type, title=tl_title, description=tl_desc
+                    )
+                )
 
         # 日历计划（按 日期+标题 幂等）
         for event_date, event_title in SAMPLE_CALENDAR:

@@ -41,3 +41,18 @@ class ContactStatus(StrEnum):
     replied = "replied"
     archived = "archived"
 
+
+
+class IdeaStatus(StrEnum):
+    seed = "seed"
+    growing = "growing"
+    draft = "draft"
+    built = "built"
+
+
+class TimelineType(StrEnum):
+    research = "research"
+    project = "project"
+    writing = "writing"
+    content = "content"
+    life = "life"

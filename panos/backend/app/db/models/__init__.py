@@ -6,13 +6,16 @@ from app.db.models.content import (
     Category,
     ContactMessage,
     GalleryItem,
+    Idea,
     MediaAsset,
     PageView,
     Project,
     ProjectLink,
+    ResearchNote,
     SiteSetting,
     SocialLink,
     Tag,
+    TimelineEvent,
     Widget,
 )
 
@@ -24,13 +27,16 @@ __all__ = [
     "Category",
     "ContactMessage",
     "GalleryItem",
+    "Idea",
     "MediaAsset",
     "PageView",
     "Project",
     "ProjectLink",
+    "ResearchNote",
     "SiteSetting",
     "SocialLink",
     "Tag",
+    "TimelineEvent",
     "Widget",
 ]
 
