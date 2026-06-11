@@ -36,8 +36,8 @@ interface WindowStore {
   restartIntro: () => void;
 }
 
-// 与 CSS `.frame { width: min(880px, calc(100vw - 48px)) }` 对齐，保证居中计算一致。
-const DEFAULT_WIDTH = 880;
+// 与 CSS `.frame { width: min(1080px, calc(100vw - 48px)) }` 对齐，保证居中计算一致。
+const DEFAULT_WIDTH = 1080;
 const VIEWPORT_MARGIN = 48;
 const CASCADE_STEP = 28;
 // 与 DesktopShell.module.css `.windowLayer { inset: 36px 0 94px }` 对齐（菜单栏 / Dock 区域）。

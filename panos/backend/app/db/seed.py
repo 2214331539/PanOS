@@ -336,7 +336,18 @@ SAMPLE_WIDGETS: list[dict[str, object]] = [
         },
     },
     {"type": "github", "title": "GitHub", "payload": {"username": "2214331539"}},
+    {"type": "calendar", "title": "Calendar", "payload": {}},
     {"type": "visitors", "title": "Visitors", "payload": {}},
+    {
+        "type": "sticky",
+        "title": "Welcome Sticky",
+        "payload": {"text": "👋 欢迎来到我的桌面\n东西都能点，慢慢逛", "rotate": -2},
+    },
+    {
+        "type": "sticky",
+        "title": "Now Sticky",
+        "payload": {"text": "本周目标：\n把 PanOS 部署上线 🚀", "rotate": 1.5},
+    },
 ]
 
 PROFILE_VALUE = {

@@ -45,12 +45,51 @@
   font-size: 12px;
 }
 
-.active {
-  overflow: hidden;
-  color: var(--text-muted);
+.menus {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.menuTrigger {
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
   font-size: 13px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-weight: 600;
+  padding: 4px 10px;
+}
+
+.menuTrigger:hover,
+.menuTrigger[data-state="open"] {
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+}
+
+.checkSlot {
+  display: inline-grid;
+  width: 16px;
+  place-items: center;
+}
+
+.shortcut {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.statusIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+}
+
+.batteryText {
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .clock {
@@ -134,7 +173,9 @@
     height: 44px;
   }
 
-  .active {
+  /* 移动端空间有限：应用菜单与状态彩蛋只属于桌面端。 */
+  .menus,
+  .statusIcon {
     display: none;
   }
 }

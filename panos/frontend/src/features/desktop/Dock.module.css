@@ -57,6 +57,27 @@
   opacity: 0.85;
 }
 
+/* 内容 App 与系统区（废纸篓）之间的分隔线。 */
+.divider {
+  width: 1px;
+  height: 44px;
+  margin: 0 4px;
+  align-self: center;
+  background: var(--border);
+}
+
+/* 废纸篓：灰色金属质感圆角图标。 */
+.trash {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: linear-gradient(160deg, #b7bdc6, #8d939c);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 45%);
+  color: #fff;
+}
+
 /* 未上线的 App 直接在图标上标出阶段，点击前就能形成预期（tooltip 只在 hover 才可见）。 */
 .stage {
   position: absolute;

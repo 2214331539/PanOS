@@ -1,5 +1,5 @@
-import { AnimatePresence } from "motion/react";
-import { useEffect } from "react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { useSearchParams } from "react-router";
 
@@ -9,11 +9,14 @@ import { AppIcon } from "@/shared/ui/AppIcon";
 
 import { AppWindowContent } from "./AppWindowContent";
 import { DOCK_APPS, isDockAppId } from "./config/apps";
+import type { ContextMenuPosition } from "./DesktopContextMenu";
+import { DesktopContextMenu } from "./DesktopContextMenu";
 import { DesktopIcons } from "./DesktopIcons";
 import styles from "./DesktopShell.module.css";
 import { Dock } from "./Dock";
 import { MenuBar } from "./MenuBar";
 import { Spotlight } from "./Spotlight";
+import { StickyNotes } from "./StickyNotes";
 import { Widgets } from "./Widgets";
 import type { PanosWindow } from "./window-store";
 import { useWindowStore } from "./window-store";
@@ -31,6 +34,31 @@ export function DesktopShell() {
   const mode = useThemeStore((state) => state.mode);
   const openSpotlight = useSpotlightStore((state) => state.open);
   const [searchParams, setSearchParams] = useSearchParams();
+  const reduceMotion = useReducedMotion();
+  const shellRef = useRef<HTMLElement>(null);
+  const [contextMenu, setContextMenu] = useState<ContextMenuPosition | null>(null);
+
+  // 桌面空白处右键弹 mac 菜单；交互元素（窗口/按钮/输入框等）保留原生行为。
+  function onShellContextMenu(event: React.MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (target.closest("article, header, nav, aside, button, a, input, textarea, [role='dialog'], [role='note']")) {
+      return;
+    }
+    event.preventDefault();
+    setContextMenu({
+      x: Math.min(event.clientX, window.innerWidth - 210),
+      y: Math.min(event.clientY, window.innerHeight - 190),
+    });
+  }
+
+  // 壁纸视差：鼠标位置归一化到 [-1, 1] 写入 CSS 变量，壁纸反向小幅平移制造景深。
+  function onShellMouseMove(event: React.MouseEvent) {
+    if (reduceMotion) return;
+    const shell = shellRef.current;
+    if (!shell) return;
+    shell.style.setProperty("--px", String((event.clientX / window.innerWidth) * 2 - 1));
+    shell.style.setProperty("--py", String((event.clientY / window.innerHeight) * 2 - 1));
+  }
 
   useEffect(() => {
     applyTheme(mode);
@@ -91,11 +119,20 @@ export function DesktopShell() {
   } as CSSProperties;
 
   return (
-    <main className={styles.desktopShell} aria-label="PanOS desktop" style={shellStyle}>
+    <main
+      ref={shellRef}
+      className={styles.desktopShell}
+      aria-label="PanOS desktop"
+      style={shellStyle}
+      onMouseMove={onShellMouseMove}
+      onContextMenu={onShellContextMenu}
+    >
       <div className={styles.wallpaper} aria-hidden="true" />
+      <div className={styles.grain} aria-hidden="true" />
       <MenuBar />
       <DesktopIcons />
       <Widgets />
+      <StickyNotes />
 
       <section className={styles.mobileHome} aria-label="PanOS apps">
         <div className={styles.mobileHomeHero}>
@@ -120,6 +157,12 @@ export function DesktopShell() {
         </div>
       </section>
 
+      {visibleCount === 0 ? (
+        <p className={styles.ghostHint} aria-hidden="true">
+          双击桌面图标打开内容，或按 ⌘K 搜索
+        </p>
+      ) : null}
+
       <section className={styles.windowLayer} aria-label="Open PanOS windows">
         <AnimatePresence>
           {openWindows.map((windowState) => (
@@ -132,6 +175,9 @@ export function DesktopShell() {
 
       <Dock hideOnMobile={visibleCount > 0} />
       <Spotlight />
+      {contextMenu ? (
+        <DesktopContextMenu position={contextMenu} onClose={() => setContextMenu(null)} />
+      ) : null}
     </main>
   );
 }

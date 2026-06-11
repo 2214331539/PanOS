@@ -87,7 +87,7 @@ test("桌面图标双击直达最新文章", async ({ page, isMobile }) => {
   test.skip(isMobile, "桌面图标仅桌面端展示");
   await page.goto("/");
 
-  await page.getByRole("button", { name: "最新文章：Agent Memory 的核心价值" }).dblclick();
+  await page.getByRole("button", { name: /文章：Agent Memory 的核心价值/ }).dblclick();
 
   await expect(page.getByRole("heading", { name: "Agent Memory 的核心价值" })).toBeVisible();
   await expect(page).toHaveURL(/app=articles/);
@@ -115,6 +115,8 @@ test("点击时钟 Widget 放大为日历并展示计划", async ({ page, isMobi
   test.skip(isMobile, "Widget 仅宽屏桌面端展示");
   await page.goto("/");
 
+  // 加宽后的欢迎窗会盖住左侧 Widget 列，先关掉。
+  await page.getByRole("button", { name: "Close Welcome to PanOS" }).click();
   await page.getByRole("button", { name: "打开日历查看计划" }).click();
   const calendar = page.getByRole("dialog", { name: "日历与计划" });
   await expect(calendar).toBeVisible();

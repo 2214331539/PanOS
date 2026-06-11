@@ -1,4 +1,4 @@
-import { Briefcase, FileText } from "lucide-react";
+import { Briefcase, FileText, User } from "lucide-react";
 import { useState } from "react";
 
 import { useArticles } from "@/features/articles/api";
@@ -18,7 +18,8 @@ interface DesktopIconItem {
   open: () => void;
 }
 
-// 桌面图标：把精选内容投射为桌面"文件"。macOS 交互——单击选中，双击/Enter 打开。
+// 桌面图标：精选内容投影为桌面"文件"，从右上角往下排（macOS 默认位）。
+// 单击选中，双击 / Enter 打开。上限约 9 个——桌面是精选，不是文件堆。
 export function DesktopIcons() {
   const openWindow = useWindowStore((state) => state.openWindow);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -27,46 +28,48 @@ export function DesktopIcons() {
   const { data: projects } = useProjects();
   const { data: gallery } = useGallery();
 
-  const latestArticle = articles?.[0];
-  const featuredProject = projects?.find((project) => project.isFeatured) ?? projects?.[0];
-  const latestPhoto = gallery?.[0];
-
   const items: DesktopIconItem[] = [];
-  if (latestArticle) {
+
+  for (const article of (articles ?? []).slice(0, 3)) {
     items.push({
-      key: `article-${latestArticle.slug}`,
-      label: latestArticle.title,
-      hint: "最新文章",
+      key: `article-${article.slug}`,
+      label: `${article.title}.md`,
+      hint: "文章",
       icon: (
         <AppIcon accent="blue">
           <FileText aria-hidden="true" size={24} strokeWidth={2.2} />
         </AppIcon>
       ),
-      open: () => openWindow("articles", { slug: latestArticle.slug }),
+      open: () => openWindow("articles", { slug: article.slug }),
     });
   }
-  if (featuredProject) {
+
+  const sortedProjects = [...(projects ?? [])].sort(
+    (a, b) => Number(b.isFeatured) - Number(a.isFeatured),
+  );
+  for (const project of sortedProjects.slice(0, 2)) {
     items.push({
-      key: `project-${featuredProject.slug}`,
-      label: featuredProject.name,
-      hint: "置顶项目",
+      key: `project-${project.slug}`,
+      label: project.name,
+      hint: "项目",
       icon: (
         <AppIcon accent="emerald">
           <Briefcase aria-hidden="true" size={24} strokeWidth={2.2} />
         </AppIcon>
       ),
-      open: () => openWindow("projects", { slug: featuredProject.slug }),
+      open: () => openWindow("projects", { slug: project.slug }),
     });
   }
-  if (latestPhoto) {
+
+  for (const photo of (gallery ?? []).slice(0, 3)) {
     items.push({
-      key: `photo-${latestPhoto.slug}`,
-      label: latestPhoto.title,
-      hint: "最新照片",
+      key: `photo-${photo.slug}`,
+      label: `${photo.title}.jpg`,
+      hint: "照片",
       icon: (
         <img
           className={styles.thumb}
-          src={latestPhoto.media.url}
+          src={photo.media.url}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -76,7 +79,19 @@ export function DesktopIcons() {
     });
   }
 
-  if (items.length === 0) {
+  items.push({
+    key: "about-resume",
+    label: "关于我.pdf",
+    hint: "关于",
+    icon: (
+      <AppIcon accent="cyan">
+        <User aria-hidden="true" size={24} strokeWidth={2.2} />
+      </AppIcon>
+    ),
+    open: () => openWindow("about"),
+  });
+
+  if (items.length <= 1) {
     return null;
   }
 

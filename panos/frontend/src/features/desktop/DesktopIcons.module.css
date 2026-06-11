@@ -1,19 +1,24 @@
+/* macOS 桌面图标：右上角起、纵向排列、放不下时向左另起一列。
+   direction: rtl 让新列出现在左侧；图标内部恢复 ltr。 */
 .icons {
   position: fixed;
   z-index: 20;
-  top: 56px;
-  left: 22px;
+  top: 50px;
+  right: 16px;
   display: grid;
-  gap: 14px;
+  direction: rtl;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(5, auto);
+  gap: 6px 4px;
   justify-items: center;
-  width: 96px;
 }
 
 .icon {
+  direction: ltr;
   display: grid;
   justify-items: center;
-  gap: 6px;
-  width: 100%;
+  gap: 5px;
+  width: 96px;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -54,6 +59,17 @@
   text-align: center;
   text-shadow: 0 1px 4px rgb(0 0 0 / 65%);
   word-break: break-word;
+}
+
+@media (max-width: 1023px) {
+  /* 窄屏只保留第一列（5 个），避免和窗口打架。 */
+  .icons {
+    grid-template-rows: repeat(5, auto);
+  }
+
+  .icon:nth-child(n + 6) {
+    display: none;
+  }
 }
 
 @media (max-width: 767px) {

@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react";
 import { motion, useAnimationControls, useReducedMotion } from "motion/react";
 
 import { AppIcon } from "@/shared/ui/AppIcon";
@@ -67,6 +68,37 @@ function DockItem({
   );
 }
 
+// 废纸篓彩蛋：永远是空的，点一下晃一晃。
+function TrashItem({ animate }: { animate: boolean }) {
+  const shake = useAnimationControls();
+
+  return (
+    <Tooltip label="废纸篓（空）——被删掉的想法都已重生为文章">
+      <motion.button
+        className={styles.item}
+        type="button"
+        aria-label="废纸篓"
+        initial="rest"
+        whileHover={animate ? "hover" : undefined}
+        onClick={() => {
+          if (animate) {
+            void shake.start({
+              rotate: [0, -8, 8, -5, 5, 0],
+              transition: { duration: 0.45 },
+            });
+          }
+        }}
+      >
+        <motion.span className={styles.iconWrap} variants={ICON_VARIANTS} transition={HOVER_SPRING}>
+          <motion.span className={`${styles.bounceWrap} ${styles.trash}`} animate={shake}>
+            <Trash2 aria-hidden="true" size={23} strokeWidth={2} />
+          </motion.span>
+        </motion.span>
+      </motion.button>
+    </Tooltip>
+  );
+}
+
 // hideOnMobile：移动端窗口全屏打开时收起 Dock（iOS 式——关掉 App 回主屏再切换），
 // 避免悬浮 Dock 挡住窗口底部的按钮；桌面端不受影响。
 export function Dock({ hideOnMobile = false }: { hideOnMobile?: boolean }) {
@@ -95,6 +127,8 @@ export function Dock({ hideOnMobile = false }: { hideOnMobile?: boolean }) {
           />
         );
       })}
+      <span className={styles.divider} aria-hidden="true" />
+      <TrashItem animate={!reduceMotion} />
     </motion.nav>
   );
 }
