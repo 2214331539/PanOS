@@ -1,0 +1,207 @@
+.backdropWrap {
+  position: fixed;
+  inset: 0;
+  z-index: 1150;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgb(0 0 0 / 30%);
+  backdrop-filter: blur(8px);
+  cursor: default;
+}
+
+.panel {
+  position: relative;
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+  box-shadow:
+    var(--shadow-window),
+    inset 0 1px 0 var(--glass-highlight);
+  padding: 16px 18px 18px;
+  backdrop-filter: blur(32px) saturate(180%);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.monthNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.monthNav h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  min-width: 110px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.monthNav button,
+.close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.monthNav button:hover,
+.close:hover {
+  color: var(--text);
+  background: rgb(127 127 127 / 10%);
+}
+
+.weekdays,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.weekdays span {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 4px 0;
+}
+
+.day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 120ms ease-out;
+}
+
+.day:hover {
+  background: rgb(127 127 127 / 12%);
+}
+
+.today {
+  color: #fff;
+  background: var(--danger);
+}
+
+.today:hover {
+  background: color-mix(in srgb, var(--danger) 88%, #000);
+}
+
+.selected:not(.today) {
+  background: rgb(37 99 235 / 16%);
+  color: color-mix(in srgb, var(--primary) 88%, var(--text));
+}
+
+.dot {
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.today .dot {
+  background: #fff;
+}
+
+.agenda {
+  margin-top: 14px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.agenda h3 {
+  margin: 0 0 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.agenda ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agenda li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 8px;
+  background: rgb(37 99 235 / 10%);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 10px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.remove {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+}
+
+.remove:hover {
+  color: var(--danger);
+}
+
+.draftRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.draftRow input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 13px;
+  min-width: 0;
+}

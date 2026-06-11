@@ -7,6 +7,7 @@ from fastapi import APIRouter
 
 from app.modules.articles.router import router as articles_router
 from app.modules.auth.router import router as auth_router
+from app.modules.calendar.router import router as calendar_router
 from app.modules.categories.router import router as categories_router
 from app.modules.contact.router import router as contact_router
 from app.modules.desktop.router import router as desktop_router
@@ -26,6 +27,7 @@ api_router.include_router(projects_router)
 api_router.include_router(gallery_router)
 api_router.include_router(categories_router)
 api_router.include_router(widgets_router)
+api_router.include_router(calendar_router)
 api_router.include_router(views_router)
 api_router.include_router(media_router)
 api_router.include_router(auth_router)

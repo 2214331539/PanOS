@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls, useReducedMotion } from "motion/react";
 
 import { AppIcon } from "@/shared/ui/AppIcon";
 import { cn } from "@/shared/lib/utils/classnames";
@@ -29,6 +29,18 @@ function DockItem({
   onActivate: () => void;
 }) {
   const Icon = app.icon;
+  const bounce = useAnimationControls();
+
+  function activate() {
+    // macOS 启动反馈：点击时图标弹跳一次（与 hover 缩放分层，互不干扰）。
+    if (animate && !isOpen) {
+      void bounce.start({
+        y: [0, -16, 0],
+        transition: { duration: 0.45, times: [0, 0.4, 1], ease: "easeOut" },
+      });
+    }
+    onActivate();
+  }
 
   return (
     <Tooltip label={`${app.title}${app.stage ? ` · ${app.stage}` : ""}`}>
@@ -36,16 +48,18 @@ function DockItem({
         className={styles.item}
         type="button"
         aria-label={`Open ${app.title}`}
-        onClick={onActivate}
+        onClick={activate}
         initial="rest"
         whileHover={animate ? "hover" : undefined}
         whileTap={animate ? "tap" : undefined}
       >
         <motion.span className={styles.iconWrap} variants={ICON_VARIANTS} transition={HOVER_SPRING}>
-          <AppIcon accent={app.accent} className={styles.icon}>
-            <Icon aria-hidden="true" size={25} strokeWidth={2.2} />
-          </AppIcon>
-          {app.stage ? <span className={styles.stage}>{app.stage}</span> : null}
+          <motion.span className={styles.bounceWrap} animate={bounce}>
+            <AppIcon accent={app.accent} className={styles.icon}>
+              <Icon aria-hidden="true" size={25} strokeWidth={2.2} />
+            </AppIcon>
+            {app.stage ? <span className={styles.stage}>{app.stage}</span> : null}
+          </motion.span>
         </motion.span>
         {isOpen ? <span className={styles.dot} aria-hidden="true" /> : null}
       </motion.button>

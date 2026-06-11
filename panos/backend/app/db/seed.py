@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.content import (
     Article,
+    CalendarEvent,
     Category,
     GalleryItem,
     MediaAsset,
@@ -258,6 +259,11 @@ SAMPLE_LINKS: list[LinkSeed] = [
     },
 ]
 
+SAMPLE_CALENDAR: list[tuple[date, str]] = [
+    (date(2026, 6, 15), "发布 Agent Memory 系列第二篇"),
+    (date(2026, 6, 20), "PanOS 上线部署"),
+]
+
 SAMPLE_WIDGETS: list[dict[str, object]] = [
     {"type": "clock", "title": "Clock", "payload": {}},
     {
@@ -438,6 +444,17 @@ async def main() -> None:
                     sort_order=widget_sort,
                 )
             )
+
+        # 日历计划（按 日期+标题 幂等）
+        for event_date, event_title in SAMPLE_CALENDAR:
+            existing_event = await session.scalar(
+                select(CalendarEvent).where(
+                    CalendarEvent.event_date == event_date,
+                    CalendarEvent.title == event_title,
+                )
+            )
+            if existing_event is None:
+                session.add(CalendarEvent(event_date=event_date, title=event_title))
 
         # 站点资料
         profile = await session.get(SiteSetting, "profile")

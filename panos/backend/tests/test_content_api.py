@@ -163,3 +163,42 @@ def test_views_rejects_external_path() -> None:
     response = client.post("/api/views", json={"path": "https://evil.example.com"})
 
     assert response.status_code == 422
+
+
+def test_calendar_public_month() -> None:
+    response = client.get("/api/calendar?month=2026-06")
+
+    assert response.status_code == 200
+    titles = [item["title"] for item in response.json()["data"]]
+    assert "PanOS 上线部署" in titles
+
+
+def test_calendar_invalid_month() -> None:
+    assert client.get("/api/calendar?month=junk").status_code == 422
+
+
+def test_calendar_admin_roundtrip() -> None:
+    with TestClient(app) as c:
+        headers = {"Authorization": f"Bearer {_login_token(c)}"}
+        no_auth = c.post("/api/admin/calendar", json={"date": "2030-01-02", "title": "x"})
+        assert no_auth.status_code == 401
+
+        created = c.post(
+            "/api/admin/calendar",
+            headers=headers,
+            json={"date": "2030-01-02", "title": "pytest 计划"},
+        )
+        assert created.status_code == 201
+        event = created.json()["data"]
+
+        listed = c.get("/api/calendar?month=2030-01")
+        assert event["id"] in [item["id"] for item in listed.json()["data"]]
+
+        updated = c.patch(
+            f"/api/admin/calendar/{event['id']}",
+            headers=headers,
+            json={"title": "pytest 计划（改）"},
+        )
+        assert updated.json()["data"]["title"] == "pytest 计划（改）"
+
+        assert c.delete(f"/api/admin/calendar/{event['id']}", headers=headers).status_code == 204

@@ -41,6 +41,12 @@
   will-change: transform;
 }
 
+/* 启动弹跳层：与 hover 缩放层分离，避免 transform 互相覆盖。 */
+.bounceWrap {
+  position: relative;
+  display: inline-grid;
+}
+
 .dot {
   position: absolute;
   bottom: 1px;

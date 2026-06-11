@@ -110,7 +110,8 @@ export async function mockPublicApi(page: Page): Promise<void> {
       json: envelope([
         { id: "w1", type: "clock", title: "Clock", payload: {} },
         { id: "w2", type: "now", title: "Now", payload: { lines: ["正在开发：PanOS"] } },
-        { id: "w3", type: "visitors", title: "Visitors", payload: {} },
+        { id: "w3", type: "github", title: "GitHub", payload: { username: "e2e-user" } },
+        { id: "w4", type: "visitors", title: "Visitors", payload: {} },
       ]),
     }),
   );
@@ -120,9 +121,25 @@ export async function mockPublicApi(page: Page): Promise<void> {
   await page.route(/\/api\/views\/summary$/, (route) =>
     route.fulfill({ json: envelope({ total: 128, today: 6 }) }),
   );
+  await page.route(/\/api\/calendar\?.*$/, (route) => {
+    // 用请求月份动态造一条 15 号的计划，保证任何月份打开日历都有事件点。
+    const month = new URL(route.request().url()).searchParams.get("month") ?? "2026-06";
+    return route.fulfill({
+      json: envelope([{ id: "cal1", date: `${month}-15`, title: "发布新文章" }]),
+    });
+  });
   // GitHub 贡献热力图走外部社区 API，E2E 一律拦截避免外网依赖。
   await page.route(/github-contributions-api/, (route) =>
-    route.fulfill({ json: { total: {}, contributions: [] } }),
+    route.fulfill({
+      json: {
+        total: {},
+        contributions: Array.from({ length: 84 }, (_, i) => ({
+          date: `2026-0${(i % 5) + 1}-0${(i % 9) + 1}`,
+          count: i % 5,
+          level: (i % 5) as 0 | 1 | 2 | 3 | 4,
+        })),
+      },
+    }),
   );
 }
 

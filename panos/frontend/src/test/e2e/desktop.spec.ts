@@ -110,3 +110,28 @@ test("桌面 Widget 渲染时钟与访客计数", async ({ page, isMobile }) => 
   await expect(widgets.getByText("Now")).toBeVisible();
   await expect(widgets.getByText("128 次浏览")).toBeVisible();
 });
+
+test("点击时钟 Widget 放大为日历并展示计划", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Widget 仅宽屏桌面端展示");
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "打开日历查看计划" }).click();
+  const calendar = page.getByRole("dialog", { name: "日历与计划" });
+  await expect(calendar).toBeVisible();
+
+  // 15 号有计划圆点，点选后议程区显示标题
+  await calendar.getByRole("button", { name: /15 日（有计划）/ }).click();
+  await expect(calendar.getByText("发布新文章")).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(calendar).toBeHidden();
+});
+
+test("GitHub Widget 链接到主页", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Widget 仅宽屏桌面端展示");
+  await page.goto("/");
+
+  const github = page.getByRole("link", { name: /打开 GitHub 主页/ });
+  await expect(github).toHaveAttribute("href", /github\.com\//);
+  await expect(github).toHaveAttribute("target", "_blank");
+});

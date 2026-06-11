@@ -2,6 +2,7 @@ from app.db.models.base import Base
 from app.db.models.content import (
     AdminUser,
     Article,
+    CalendarEvent,
     Category,
     ContactMessage,
     GalleryItem,
@@ -19,6 +20,7 @@ __all__ = [
     "AdminUser",
     "Article",
     "Base",
+    "CalendarEvent",
     "Category",
     "ContactMessage",
     "GalleryItem",

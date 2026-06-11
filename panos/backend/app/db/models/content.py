@@ -221,6 +221,15 @@ class Widget(Base, UuidPrimaryKeyMixin, TimestampMixin):
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
 
+class CalendarEvent(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    """桌面日历上的计划事项（站长维护，访客可见）。"""
+
+    __tablename__ = "calendar_events"
+
+    event_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(120), nullable=False)
+
+
 class PageView(Base, UuidPrimaryKeyMixin, TimestampMixin):
     """匿名浏览记录：每访客（ip 哈希）每路径每天最多记一条。"""
 
