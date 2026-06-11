@@ -1,4 +1,6 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -6,6 +8,20 @@ import { TooltipProvider } from "@/shared/ui/Tooltip";
 
 import { DesktopShell } from "../DesktopShell";
 import { useWindowStore } from "../window-store";
+
+// 测试不发真实请求：retry 关掉，查询保持 pending/empty 即可。
+function renderShell(children: ReactNode, initialEntries?: string[]) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={initialEntries}>
+        <TooltipProvider>{children}</TooltipProvider>
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+}
 
 describe("DesktopShell", () => {
   beforeEach(() => {
@@ -15,13 +31,7 @@ describe("DesktopShell", () => {
   });
 
   it("renders the PanOS desktop and dock", () => {
-    render(
-      <MemoryRouter>
-        <TooltipProvider>
-          <DesktopShell />
-        </TooltipProvider>
-      </MemoryRouter>,
-    );
+    renderShell(<DesktopShell />);
 
     expect(screen.getByLabelText("PanOS desktop")).toBeInTheDocument();
     expect(screen.getByLabelText("PanOS Dock")).toBeInTheDocument();
@@ -30,13 +40,7 @@ describe("DesktopShell", () => {
   });
 
   it("opens the window referenced by the ?app= deep link", () => {
-    render(
-      <MemoryRouter initialEntries={["/?app=contact"]}>
-        <TooltipProvider>
-          <DesktopShell />
-        </TooltipProvider>
-      </MemoryRouter>,
-    );
+    renderShell(<DesktopShell />, ["/?app=contact"]);
 
     expect(screen.getByRole("article", { name: "Contact" })).toBeInTheDocument();
   });

@@ -1,6 +1,7 @@
-import { ArrowLeft, Check, Clock, Link2 } from "lucide-react";
+import { ArrowLeft, Check, Clock, Eye, Link2 } from "lucide-react";
 import { lazy, Suspense, useState } from "react";
 
+import { useRecordView } from "@/shared/lib/api/views";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
 import { useArticle } from "./api";
@@ -25,6 +26,7 @@ export function ArticleReader({
 }) {
   const { data, isLoading, isError } = useArticle(slug);
   const [copied, setCopied] = useState(false);
+  useRecordView(slug ? `/articles/${slug}` : null);
 
   function share() {
     const url = `${window.location.origin}/articles/${slug}`;
@@ -70,6 +72,11 @@ export function ArticleReader({
         {data.readingMinutes ? (
           <span>
             <Clock size={13} style={{ verticalAlign: "-2px" }} /> {data.readingMinutes} min
+          </span>
+        ) : null}
+        {data.viewCount > 0 ? (
+          <span>
+            <Eye size={13} style={{ verticalAlign: "-2px" }} /> {data.viewCount} 次阅读
           </span>
         ) : null}
       </div>

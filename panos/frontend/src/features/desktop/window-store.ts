@@ -3,6 +3,11 @@ import { create } from "zustand";
 import type { WindowAppId } from "./config/apps";
 import { WINDOW_TITLES } from "./config/apps";
 
+// 打开窗口时附带的内容定位（如直达某篇文章 / 某个项目）。
+export interface WindowPayload {
+  slug?: string;
+}
+
 export interface PanosWindow {
   id: WindowAppId;
   title: string;
@@ -13,13 +18,16 @@ export interface PanosWindow {
   // 窗口左上角坐标，相对 .window-layer（安全区）。拖拽与居中都基于它。
   x: number;
   y: number;
+  // 由 openWindow 写入、App 消费后清除（consumeWindowPayload）。
+  payload?: WindowPayload;
 }
 
 interface WindowStore {
   windows: Partial<Record<WindowAppId, PanosWindow>>;
   activeWindowId: WindowAppId | null;
   nextZIndex: number;
-  openWindow: (id: WindowAppId) => void;
+  openWindow: (id: WindowAppId, payload?: WindowPayload) => void;
+  consumeWindowPayload: (id: WindowAppId) => void;
   closeWindow: (id: WindowAppId) => void;
   minimizeWindow: (id: WindowAppId) => void;
   toggleMaximize: (id: WindowAppId) => void;
@@ -113,7 +121,7 @@ export const useWindowStore = create<WindowStore>((set) => ({
   windows: {},
   activeWindowId: null,
   nextZIndex: 10,
-  openWindow: (id) =>
+  openWindow: (id, payload) =>
     set((state) => {
       const nextZIndex = state.nextZIndex + 1;
       const existing = state.windows[id];
@@ -128,10 +136,21 @@ export const useWindowStore = create<WindowStore>((set) => ({
             isOpen: true,
             isMinimized: false,
             zIndex: nextZIndex,
+            payload: payload ?? base.payload,
           },
         },
         activeWindowId: id,
         nextZIndex,
+      };
+    }),
+  consumeWindowPayload: (id) =>
+    set((state) => {
+      const current = state.windows[id];
+      if (!current?.payload) {
+        return state;
+      }
+      return {
+        windows: { ...state.windows, [id]: { ...current, payload: undefined } },
       };
     }),
   closeWindow: (id) =>

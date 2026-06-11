@@ -14,6 +14,7 @@ from app.modules.projects.schemas import (
     ProjectCardSchema,
     ProjectDetailSchema,
 )
+from app.modules.views import service as views_service
 from app.schemas.responses import DataEnvelope
 
 public_router = APIRouter(prefix="/projects", tags=["projects"])
@@ -55,7 +56,8 @@ async def get_project(
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[ProjectDetailSchema]:
     data = await service.get_project(session, slug)
-    apply_public_cache(response, f"project:{slug}:{data.published_at}")
+    data.view_count = await views_service.count_for_path(session, f"/projects/{slug}")
+    apply_public_cache(response, f"project:{slug}:{data.published_at}:{data.view_count}")
     return DataEnvelope(data=data)
 
 

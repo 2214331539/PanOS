@@ -29,6 +29,7 @@ class ProjectCardSchema(ApiModel):
 
 class ProjectDetailSchema(ProjectCardSchema):
     background_mdx: str | None = None
+    view_count: int = 0
     features: Any | None = None
     architecture_mdx: str | None = None
     process_mdx: str | None = None

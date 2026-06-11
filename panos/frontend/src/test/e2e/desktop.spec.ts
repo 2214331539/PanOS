@@ -41,7 +41,7 @@ test("打开 Articles App 后看到文章卡片，URL 同步 ?app=", async ({ pa
 
   await openApp(page, isMobile, "Articles");
 
-  await expect(page.getByText("Agent Memory 的核心价值")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Agent Memory 的核心价值" })).toBeVisible();
   await expect(page).toHaveURL(/app=articles/);
 });
 
@@ -59,7 +59,11 @@ test("Gallery 点击图片打开 Lightbox，ESC 关闭", async ({ page, isMobile
 
   await openApp(page, isMobile, "Gallery");
 
-  await page.getByRole("button", { name: "PanOS Wallpaper" }).click();
+  // 桌面图标也叫 "PanOS Wallpaper"，把点击范围限定在窗口层内的图库瓦片。
+  await page
+    .getByLabel("Open PanOS windows")
+    .getByRole("button", { name: "PanOS Wallpaper" })
+    .click();
   const lightbox = page.getByRole("dialog", { name: "PanOS Wallpaper" });
   await expect(lightbox).toBeVisible();
 
@@ -77,4 +81,32 @@ test("Links App 渲染来自 API 的社交链接", async ({ page, isMobile }) =>
     "href",
     "https://example.com",
   );
+});
+
+test("桌面图标双击直达最新文章", async ({ page, isMobile }) => {
+  test.skip(isMobile, "桌面图标仅桌面端展示");
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "最新文章：Agent Memory 的核心价值" }).dblclick();
+
+  await expect(page.getByRole("heading", { name: "Agent Memory 的核心价值" })).toBeVisible();
+  await expect(page).toHaveURL(/app=articles/);
+});
+
+test("欢迎窗置顶内容卡片直达文章阅读器", async ({ page, isMobile }) => {
+  test.skip(isMobile, "欢迎窗卡片流程在桌面端验证");
+  await page.goto("/");
+
+  await page.getByRole("button", { name: /最新文章 · 更新于/ }).click();
+
+  await expect(page.getByRole("heading", { name: "Agent Memory 的核心价值" })).toBeVisible();
+});
+
+test("桌面 Widget 渲染时钟与访客计数", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Widget 仅宽屏桌面端展示");
+  await page.goto("/");
+
+  const widgets = page.getByLabel("PanOS widgets");
+  await expect(widgets.getByText("Now")).toBeVisible();
+  await expect(widgets.getByText("128 次浏览")).toBeVisible();
 });

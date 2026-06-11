@@ -21,6 +21,7 @@ from app.db.models.content import (
     ProjectLink,
     SiteSetting,
     SocialLink,
+    Widget,
 )
 from app.db.models.enums import ContentStatus, MediaType, ProjectStatus, Visibility
 from app.db.session import async_session_factory
@@ -257,6 +258,19 @@ SAMPLE_LINKS: list[LinkSeed] = [
     },
 ]
 
+SAMPLE_WIDGETS: list[dict[str, object]] = [
+    {"type": "clock", "title": "Clock", "payload": {}},
+    {
+        "type": "now",
+        "title": "Now",
+        "payload": {
+            "lines": ["正在研究：Agent Memory", "正在开发：PanOS", "正在整理：个人创作空间"]
+        },
+    },
+    {"type": "github", "title": "GitHub", "payload": {"username": "2214331539"}},
+    {"type": "visitors", "title": "Visitors", "payload": {}},
+]
+
 PROFILE_VALUE = {
     "name": "潘廷峰",
     "englishName": "Pan Daniel",
@@ -405,6 +419,23 @@ async def main() -> None:
                     is_primary=link_item["is_primary"],
                     is_active=True,
                     sort_order=link_sort,
+                )
+            )
+
+        # 桌面 Widget（按 type 幂等）
+        for widget_sort, widget_item in enumerate(SAMPLE_WIDGETS):
+            existing_widget = await session.scalar(
+                select(Widget).where(Widget.type == str(widget_item["type"]))
+            )
+            if existing_widget is not None:
+                continue
+            session.add(
+                Widget(
+                    type=str(widget_item["type"]),
+                    title=str(widget_item["title"]),
+                    payload=widget_item["payload"],
+                    is_enabled=True,
+                    sort_order=widget_sort,
                 )
             )
 

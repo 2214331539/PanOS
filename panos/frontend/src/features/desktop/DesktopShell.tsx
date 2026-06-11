@@ -9,6 +9,7 @@ import { AppIcon } from "@/shared/ui/AppIcon";
 
 import { AppWindowContent } from "./AppWindowContent";
 import { DOCK_APPS, isDockAppId } from "./config/apps";
+import { DesktopIcons } from "./DesktopIcons";
 import styles from "./DesktopShell.module.css";
 import { Dock } from "./Dock";
 import { MenuBar } from "./MenuBar";
@@ -92,6 +93,7 @@ export function DesktopShell() {
     <main className={styles.desktopShell} aria-label="PanOS desktop" style={shellStyle}>
       <div className={styles.wallpaper} aria-hidden="true" />
       <MenuBar />
+      <DesktopIcons />
       <Widgets />
 
       <section className={styles.mobileHome} aria-label="PanOS apps">

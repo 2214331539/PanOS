@@ -132,3 +132,34 @@ def _link_crud_roundtrip(c: TestClient) -> None:
     assert link["id"] not in public_ids
 
     assert c.delete(f"/api/admin/links/{link['id']}", headers=headers).status_code == 204
+
+
+def test_widgets_public() -> None:
+    response = client.get("/api/widgets")
+
+    assert response.status_code == 200
+    types = [item["type"] for item in response.json()["data"]]
+    assert "clock" in types
+    assert "now" in types
+
+
+def test_views_record_and_summary() -> None:
+    with TestClient(app) as c:
+        path = f"/articles/pytest-{uuid4().hex[:8]}"
+        first = c.post("/api/views", json={"path": path})
+        assert first.status_code == 201
+        assert first.json()["data"]["count"] == 1
+
+        # 同访客同天重复浏览不重复计数
+        second = c.post("/api/views", json={"path": path})
+        assert second.json()["data"]["count"] == 1
+
+        summary = c.get("/api/views/summary")
+        assert summary.status_code == 200
+        assert summary.json()["data"]["total"] >= 1
+
+
+def test_views_rejects_external_path() -> None:
+    response = client.post("/api/views", json={"path": "https://evil.example.com"})
+
+    assert response.status_code == 422

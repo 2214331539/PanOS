@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: "/admin/projects", label: "项目" },
   { to: "/admin/gallery", label: "图库" },
   { to: "/admin/links", label: "链接" },
+  { to: "/admin/widgets", label: "Widget" },
 ];
 
 export function AdminLayout({ title, children }: { title: string; children: ReactNode }) {

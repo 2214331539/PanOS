@@ -14,6 +14,7 @@ from app.modules.articles.schemas import (
     ArticleCardSchema,
     ArticleDetailSchema,
 )
+from app.modules.views import service as views_service
 from app.schemas.responses import DataEnvelope
 
 public_router = APIRouter(prefix="/articles", tags=["articles"])
@@ -52,7 +53,8 @@ async def get_article(
     session: AsyncSession = Depends(get_session),
 ) -> DataEnvelope[ArticleDetailSchema]:
     data = await service.get_article(session, slug)
-    apply_public_cache(response, f"article:{slug}:{data.published_at}")
+    data.view_count = await views_service.count_for_path(session, f"/articles/{slug}")
+    apply_public_cache(response, f"article:{slug}:{data.published_at}:{data.view_count}")
     return DataEnvelope(data=data)
 
 

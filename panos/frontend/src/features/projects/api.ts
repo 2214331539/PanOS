@@ -52,6 +52,7 @@ export interface ProjectCard {
 
 export interface ProjectDetail extends ProjectCard {
   backgroundMdx: string | null;
+  viewCount: number;
   features: unknown;
   architectureMdx: string | null;
   processMdx: string | null;

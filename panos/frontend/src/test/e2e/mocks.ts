@@ -105,6 +105,25 @@ export async function mockPublicApi(page: Page): Promise<void> {
   await page.route(/\/api\/contact$/, (route) =>
     route.fulfill({ status: 201, json: envelope({ id: "c1", status: "new" }) }),
   );
+  await page.route(/\/api\/widgets$/, (route) =>
+    route.fulfill({
+      json: envelope([
+        { id: "w1", type: "clock", title: "Clock", payload: {} },
+        { id: "w2", type: "now", title: "Now", payload: { lines: ["正在开发：PanOS"] } },
+        { id: "w3", type: "visitors", title: "Visitors", payload: {} },
+      ]),
+    }),
+  );
+  await page.route(/\/api\/views$/, (route) =>
+    route.fulfill({ status: 201, json: envelope({ path: "/x", count: 1 }) }),
+  );
+  await page.route(/\/api\/views\/summary$/, (route) =>
+    route.fulfill({ json: envelope({ total: 128, today: 6 }) }),
+  );
+  // GitHub 贡献热力图走外部社区 API，E2E 一律拦截避免外网依赖。
+  await page.route(/github-contributions-api/, (route) =>
+    route.fulfill({ json: { total: {}, contributions: [] } }),
+  );
 }
 
 // 拦截后台 API（登录 + 文章列表），覆盖登录链路。

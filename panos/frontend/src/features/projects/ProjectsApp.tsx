@@ -1,11 +1,13 @@
 import { Briefcase } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AppHeader } from "@/shared/ui/AppHeader";
 import { ContentLayout, SidebarButton } from "@/shared/ui/ContentLayout";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
 import { useCategories } from "@/shared/lib/api/categories";
+
+import { useWindowStore } from "@/features/desktop/window-store";
 
 import { useProjects } from "./api";
 import { ProjectCard } from "./ProjectCard";
@@ -15,6 +17,18 @@ import styles from "./ProjectsApp.module.css";
 export function ProjectsApp() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+
+  const payloadSlug = useWindowStore((state) => state.windows.projects?.payload?.slug);
+  const consumeWindowPayload = useWindowStore((state) => state.consumeWindowPayload);
+  // 渲染期间同步派生选中项（React 推荐的状态调整模式），payload 在 effect 中消费。
+  if (payloadSlug && payloadSlug !== selectedSlug) {
+    setSelectedSlug(payloadSlug);
+  }
+  useEffect(() => {
+    if (payloadSlug) {
+      consumeWindowPayload("projects");
+    }
+  }, [payloadSlug, consumeWindowPayload]);
 
   const { data: categories } = useCategories("projects");
   const { data: projects, isLoading } = useProjects(activeCategory ?? undefined);

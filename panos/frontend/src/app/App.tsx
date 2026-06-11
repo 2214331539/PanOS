@@ -7,6 +7,7 @@ import { ArticleDetailRoute } from "@/features/articles/ArticleDetailRoute";
 import { ArticleEditorRoute } from "@/features/articles/admin/ArticleEditorRoute";
 import { ArticleListRoute } from "@/features/articles/admin/ArticleListRoute";
 import { DesktopShell } from "@/features/desktop/DesktopShell";
+import { WidgetsAdminRoute } from "@/features/desktop/admin/WidgetsAdminRoute";
 import { GalleryAdminRoute } from "@/features/gallery/admin/GalleryAdminRoute";
 import { LinksAdminRoute } from "@/features/links/admin/LinksAdminRoute";
 import { ProjectDetailRoute } from "@/features/projects/ProjectDetailRoute";
@@ -36,6 +37,7 @@ export function App() {
       <Route path="/admin/projects/:id/edit" element={guarded(<ProjectEditorRoute />)} />
       <Route path="/admin/gallery" element={guarded(<GalleryAdminRoute />)} />
       <Route path="/admin/links" element={guarded(<LinksAdminRoute />)} />
+      <Route path="/admin/widgets" element={guarded(<WidgetsAdminRoute />)} />
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

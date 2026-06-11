@@ -30,6 +30,7 @@ interface ArticleNav {
 
 export interface ArticleDetail extends ArticleCard {
   bodyMdx: string;
+  viewCount: number;
   previous: ArticleNav | null;
   next: ArticleNav | null;
 }

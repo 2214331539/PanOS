@@ -23,6 +23,7 @@ class ArticleCardSchema(ApiModel):
 
 class ArticleDetailSchema(ArticleCardSchema):
     body_mdx: str
+    view_count: int = 0
     previous: ArticleNavSchema | None = None
     next: ArticleNavSchema | None = None
 

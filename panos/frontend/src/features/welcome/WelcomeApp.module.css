@@ -13,3 +13,65 @@
   font-size: 18px;
   line-height: 1.6;
 }
+
+/* 置顶内容卡片：欢迎窗的第一转化入口。 */
+.featured {
+  display: grid;
+  gap: 5px;
+  max-width: 560px;
+  margin: 18px 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgb(255 255 255 / 30%);
+  cursor: pointer;
+  padding: 14px 16px;
+  text-align: left;
+  transition:
+    transform 140ms ease-out,
+    border-color 140ms ease-out;
+}
+
+.featured:hover {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+  transform: translateY(-2px);
+}
+
+.featuredEyebrow {
+  color: color-mix(in srgb, var(--primary) 88%, var(--text));
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.featuredTitle {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.featuredExcerpt {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.featuredCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured:hover {
+    transform: none;
+  }
+}

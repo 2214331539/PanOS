@@ -221,6 +221,19 @@ class Widget(Base, UuidPrimaryKeyMixin, TimestampMixin):
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
 
+class PageView(Base, UuidPrimaryKeyMixin, TimestampMixin):
+    """匿名浏览记录：每访客（ip 哈希）每路径每天最多记一条。"""
+
+    __tablename__ = "page_views"
+    __table_args__ = (
+        UniqueConstraint("path", "ip_hash", "view_date", name="uq_page_views_path_ip_date"),
+    )
+
+    path: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    ip_hash: Mapped[str] = mapped_column(String, nullable=False)
+    view_date: Mapped[date] = mapped_column(Date, nullable=False)
+
+
 class ContactMessage(Base, UuidPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "contact_messages"
 

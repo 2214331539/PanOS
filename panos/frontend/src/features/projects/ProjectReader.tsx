@@ -1,7 +1,8 @@
-import { ArrowLeft, Check, ExternalLink, Link2 } from "lucide-react";
+import { ArrowLeft, Check, ExternalLink, Eye, Link2 } from "lucide-react";
 import { lazy, Suspense, useState } from "react";
 
 import { Button } from "@/shared/ui/Button";
+import { useRecordView } from "@/shared/lib/api/views";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
 import { STATUS_LABEL, useProject } from "./api";
@@ -27,6 +28,7 @@ export function ProjectReader({
 }) {
   const { data, isLoading, isError } = useProject(slug);
   const [copied, setCopied] = useState(false);
+  useRecordView(slug ? `/projects/${slug}` : null);
 
   function share() {
     const url = `${window.location.origin}/projects/${slug}`;
@@ -69,6 +71,11 @@ export function ProjectReader({
       <div className={styles.metaRow}>
         <span className={styles.status}>{STATUS_LABEL[data.status]}</span>
         {data.category ? <span>{data.category.name}</span> : null}
+        {data.viewCount > 0 ? (
+          <span>
+            <Eye size={13} style={{ verticalAlign: "-2px" }} /> {data.viewCount} 次浏览
+          </span>
+        ) : null}
       </div>
       <h1 className={styles.title}>{data.name}</h1>
       <p className={styles.tagline}>{data.tagline}</p>

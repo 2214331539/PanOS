@@ -14,6 +14,8 @@ from app.modules.gallery.router import router as gallery_router
 from app.modules.links.router import router as links_router
 from app.modules.media.router import router as media_router
 from app.modules.projects.router import router as projects_router
+from app.modules.views.router import router as views_router
+from app.modules.widgets.router import router as widgets_router
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(desktop_router)
@@ -23,5 +25,7 @@ api_router.include_router(articles_router)
 api_router.include_router(projects_router)
 api_router.include_router(gallery_router)
 api_router.include_router(categories_router)
+api_router.include_router(widgets_router)
+api_router.include_router(views_router)
 api_router.include_router(media_router)
 api_router.include_router(auth_router)

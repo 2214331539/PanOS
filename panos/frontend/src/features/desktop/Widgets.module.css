@@ -40,6 +40,67 @@
   font-size: 13px;
 }
 
+.clockTime {
+  margin: 0 !important;
+  color: var(--text) !important;
+  font-size: 34px !important;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.clockDate {
+  margin: 4px 0 0 !important;
+}
+
+/* GitHub 贡献热力图：7 行 × 12 列，列为周（grid 纵向填充）。 */
+.heatmap {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 10px);
+  gap: 3px;
+  justify-content: start;
+  margin: 4px 0 2px;
+}
+
+.heatCell {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: rgb(127 127 127 / 16%);
+}
+
+.heatCell[data-level="1"] {
+  background: color-mix(in srgb, var(--success) 30%, transparent);
+}
+
+.heatCell[data-level="2"] {
+  background: color-mix(in srgb, var(--success) 55%, transparent);
+}
+
+.heatCell[data-level="3"] {
+  background: color-mix(in srgb, var(--success) 80%, transparent);
+}
+
+.heatCell[data-level="4"] {
+  background: var(--success);
+}
+
+.visitorCount {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  margin: 0 !important;
+  color: var(--text) !important;
+  font-size: 18px !important;
+  font-weight: 800;
+}
+
+.widgetMeta {
+  margin: 4px 0 0 !important;
+  font-size: 12px !important;
+}
+
 @media (max-width: 1023px) {
   .widgets {
     display: none;
