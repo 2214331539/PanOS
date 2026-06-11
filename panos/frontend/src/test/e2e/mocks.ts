@@ -121,6 +121,28 @@ export async function mockPublicApi(page: Page): Promise<void> {
   await page.route(/\/api\/views\/summary$/, (route) =>
     route.fulfill({ json: envelope({ total: 128, today: 6 }) }),
   );
+  await page.route(/\/api\/search\?.*$/, (route) =>
+    route.fulfill({
+      json: envelope([
+        {
+          type: "article",
+          id: "a1",
+          slug: "agent-memory-intro",
+          title: "Agent Memory 的核心价值",
+          excerpt: "为什么「记忆」是关键一步。",
+          url: "/articles/agent-memory-intro",
+        },
+        {
+          type: "project",
+          id: "p1",
+          slug: "panos",
+          title: "PanOS",
+          excerpt: "浏览器里的个人操作系统",
+          url: "/projects/panos",
+        },
+      ]),
+    }),
+  );
   await page.route(/\/api\/calendar\?.*$/, (route) => {
     // 用请求月份动态造一条 15 号的计划，保证任何月份打开日历都有事件点。
     const month = new URL(route.request().url()).searchParams.get("month") ?? "2026-06";

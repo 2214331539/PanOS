@@ -202,3 +202,18 @@ def test_calendar_admin_roundtrip() -> None:
         assert updated.json()["data"]["title"] == "pytest 计划（改）"
 
         assert c.delete(f"/api/admin/calendar/{event['id']}", headers=headers).status_code == 204
+
+
+def test_search_aggregates_types() -> None:
+    response = client.get("/api/search?q=PanOS")
+
+    assert response.status_code == 200
+    types = {item["type"] for item in response.json()["data"]}
+    # 种子数据里 PanOS 同时命中文章、项目与图库
+    assert "project" in types
+    assert "article" in types
+
+
+def test_search_requires_query() -> None:
+    assert client.get("/api/search").status_code == 422
+    assert client.get("/api/search?q=").status_code == 422

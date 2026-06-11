@@ -125,6 +125,20 @@
   background: rgb(37 99 235 / 12%);
 }
 
+/* 分组标题（应用 / 文章 / 项目 / 照片 / 链接）。 */
+.groupLabel {
+  margin: 6px 0 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0 8px;
+}
+
+.results > div > button {
+  width: 100%;
+}
+
 .results strong,
 .results small {
   display: block;

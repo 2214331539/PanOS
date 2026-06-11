@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Send } from "lucide-react";
+import { CheckCircle2, CircleAlert, Send } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,8 +19,10 @@ const contactSchema = z.object({
 
 type ContactFormValues = z.infer<typeof contactSchema>;
 
+type SubmitStatus = { tone: "ok" | "error"; text: string };
+
 export function ContactApp() {
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState<SubmitStatus | null>(null);
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -39,10 +41,10 @@ export function ContactApp() {
   const onSubmit = handleSubmit(async (values) => {
     try {
       await submitContact(values);
-      setStatus("留言已进入 PanOS。");
+      setStatus({ tone: "ok", text: "留言已进入 PanOS，我会尽快回复你。" });
       reset();
     } catch {
-      setStatus("API 暂未启动，表单校验已通过。");
+      setStatus({ tone: "error", text: "发送失败了，请稍后重试或直接给我发邮件。" });
     }
   });
 
@@ -53,29 +55,56 @@ export function ContactApp() {
       <form className={styles.form} onSubmit={(event) => void onSubmit(event)}>
         <label>
           姓名
-          <input {...register("name")} autoComplete="name" />
+          <input
+            {...register("name")}
+            autoComplete="name"
+            placeholder="怎么称呼你"
+            aria-invalid={errors.name ? true : undefined}
+          />
           {errors.name ? <span>{errors.name.message}</span> : null}
         </label>
         <label>
           邮箱
-          <input {...register("email")} autoComplete="email" />
+          <input
+            {...register("email")}
+            autoComplete="email"
+            placeholder="you@example.com"
+            aria-invalid={errors.email ? true : undefined}
+          />
           {errors.email ? <span>{errors.email.message}</span> : null}
         </label>
-        <label>
+        <label className={styles.fullRow}>
           主题
-          <input {...register("topic")} />
+          <input
+            {...register("topic")}
+            placeholder="想聊点什么（可选）"
+            aria-invalid={errors.topic ? true : undefined}
+          />
           {errors.topic ? <span>{errors.topic.message}</span> : null}
         </label>
         <label className={styles.fullRow}>
           内容
-          <textarea {...register("message")} rows={5} />
+          <textarea
+            {...register("message")}
+            rows={5}
+            placeholder="写下你的想法、问题或合作意向…"
+            aria-invalid={errors.message ? true : undefined}
+          />
           {errors.message ? <span>{errors.message.message}</span> : null}
         </label>
         <Button type="submit" className={styles.fullRow} disabled={isSubmitting}>
           <Send size={16} />
           {isSubmitting ? "Sending" : "Send Message"}
         </Button>
-        {status ? <p className={styles.status}>{status}</p> : null}
+        {status ? (
+          <p
+            className={status.tone === "ok" ? styles.statusOk : styles.statusError}
+            role="status"
+          >
+            {status.tone === "ok" ? <CheckCircle2 size={15} /> : <CircleAlert size={15} />}
+            {status.text}
+          </p>
+        ) : null}
       </form>
     </section>
   );

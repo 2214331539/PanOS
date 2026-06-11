@@ -33,11 +33,41 @@ button {
 }
 
 button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
+a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* macOS 式表单焦点：柔和光环替代生硬 outline，过渡顺滑。 */
+input,
+textarea,
+select {
+  transition:
+    border-color 140ms ease-out,
+    box-shadow 140ms ease-out;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--primary) 22%, transparent);
+}
+
+/* 校验失败的字段：红色描边 + 同款光环（aria-invalid 驱动，全站一致）。 */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--danger) !important;
+}
+
+input[aria-invalid="true"]:focus-visible,
+textarea[aria-invalid="true"]:focus-visible {
+  box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--danger) 22%, transparent);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 26%, transparent);
 }
 
 code {

@@ -135,3 +135,18 @@ test("GitHub Widget 链接到主页", async ({ page, isMobile }) => {
   await expect(github).toHaveAttribute("href", /github\.com\//);
   await expect(github).toHaveAttribute("target", "_blank");
 });
+
+test("Spotlight 全文搜索可直达文章", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Spotlight 键盘流程在桌面端验证");
+  await page.goto("/");
+
+  await page.keyboard.press("ControlOrMeta+k");
+  const spotlight = page.getByRole("dialog", { name: "Spotlight search" });
+  await expect(spotlight).toBeVisible();
+
+  await page.getByRole("combobox").fill("memory");
+  await expect(spotlight.getByText("文章")).toBeVisible();
+  await spotlight.getByRole("option", { name: /Agent Memory 的核心价值/ }).click();
+
+  await expect(page.getByRole("heading", { name: "Agent Memory 的核心价值" })).toBeVisible();
+});

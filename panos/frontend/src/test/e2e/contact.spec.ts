@@ -24,5 +24,5 @@ test("Contact 表单提交成功后展示确认信息", async ({ page }) => {
   await page.getByLabel("内容").fill("你好，我想交流一下 PanOS 这个项目的设计。");
   await page.getByRole("button", { name: "Send Message" }).click();
 
-  await expect(page.getByText("留言已进入 PanOS。")).toBeVisible();
+  await expect(page.getByText("留言已进入 PanOS，我会尽快回复你。")).toBeVisible();
 });

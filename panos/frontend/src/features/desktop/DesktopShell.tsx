@@ -79,11 +79,12 @@ export function DesktopShell() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [openSpotlight]);
 
-  const visibleWindows = Object.values(windows)
-    .filter((windowState): windowState is PanosWindow =>
-      Boolean(windowState?.isOpen) && !windowState.isMinimized,
-    )
+  // 最小化的窗口保持挂载（WindowFrame 内部动画到 Dock 收起态），
+  // 这样最小化/恢复都有连续动画；Dock 的移动端收起逻辑只看真正可见的窗口。
+  const openWindows = Object.values(windows)
+    .filter((windowState): windowState is PanosWindow => Boolean(windowState?.isOpen))
     .sort((left, right) => left.zIndex - right.zIndex);
+  const visibleCount = openWindows.filter((windowState) => !windowState.isMinimized).length;
 
   const shellStyle = {
     "--panos-wallpaper": `url("${ASSETS.wallpaper.url}")`,
@@ -121,7 +122,7 @@ export function DesktopShell() {
 
       <section className={styles.windowLayer} aria-label="Open PanOS windows">
         <AnimatePresence>
-          {visibleWindows.map((windowState) => (
+          {openWindows.map((windowState) => (
             <WindowFrame key={windowState.id} windowState={windowState}>
               <AppWindowContent id={windowState.id} />
             </WindowFrame>
@@ -129,7 +130,7 @@ export function DesktopShell() {
         </AnimatePresence>
       </section>
 
-      <Dock hideOnMobile={visibleWindows.length > 0} />
+      <Dock hideOnMobile={visibleCount > 0} />
       <Spotlight />
     </main>
   );

@@ -28,10 +28,21 @@
 .form textarea {
   width: 100%;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--surface-strong);
   color: var(--text);
-  padding: 10px 12px;
+  padding: 11px 13px;
+}
+
+.form input::placeholder,
+.form textarea::placeholder {
+  color: color-mix(in srgb, var(--text-muted) 70%, transparent);
+  font-weight: 400;
+}
+
+.form input:hover:not(:focus-visible),
+.form textarea:hover:not(:focus-visible) {
+  border-color: color-mix(in srgb, var(--text-muted) 40%, var(--border));
 }
 
 .form textarea {
@@ -39,18 +50,40 @@
 }
 
 .form span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   color: var(--danger);
   font-size: 12px;
+  font-weight: 600;
 }
 
 .fullRow {
   grid-column: 1 / -1;
 }
 
-.status {
+/* 提交结果 banner：成功 / 失败差异化着色。 */
+.statusOk,
+.statusError {
   grid-column: 1 / -1;
-  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  border-radius: 10px;
   font-size: 14px;
+  font-weight: 600;
+  padding: 10px 12px;
+}
+
+.statusOk {
+  background: rgb(16 185 129 / 12%);
+  color: color-mix(in srgb, var(--success) 80%, var(--text));
+}
+
+.statusError {
+  background: rgb(244 63 94 / 10%);
+  color: color-mix(in srgb, var(--danger) 85%, var(--text));
 }
 
 @media (max-width: 767px) {
