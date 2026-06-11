@@ -1,4 +1,4 @@
-import { AnimatePresence, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { useSearchParams } from "react-router";
@@ -17,7 +17,6 @@ import { Dock } from "./Dock";
 import { HelpBubble } from "./HelpBubble";
 import { MenuBar } from "./MenuBar";
 import { Spotlight } from "./Spotlight";
-import { StickyNotes } from "./StickyNotes";
 import { Widgets } from "./Widgets";
 import type { PanosWindow } from "./window-store";
 import { useWindowStore } from "./window-store";
@@ -38,11 +37,27 @@ export function DesktopShell() {
   const reduceMotion = useReducedMotion();
   const shellRef = useRef<HTMLElement>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenuPosition | null>(null);
+  const [wallpaperIndex, setWallpaperIndex] = useState(0);
+
+  // 壁纸轮播：15s 一换，交叉淡入；提前预载下一张避免切换闪白。
+  useEffect(() => {
+    const id = window.setInterval(
+      () => setWallpaperIndex((index) => (index + 1) % ASSETS.wallpapers.length),
+      15_000,
+    );
+    return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const next = ASSETS.wallpapers[(wallpaperIndex + 1) % ASSETS.wallpapers.length];
+    const preload = new Image();
+    preload.src = next.url;
+  }, [wallpaperIndex]);
 
   // 桌面空白处右键弹 mac 菜单；交互元素（窗口/按钮/输入框等）保留原生行为。
   function onShellContextMenu(event: React.MouseEvent) {
     const target = event.target as HTMLElement;
-    if (target.closest("article, header, nav, aside, button, a, input, textarea, [role='dialog'], [role='note']")) {
+    if (target.closest("article, header, nav, aside, button, a, input, textarea, [role='dialog']")) {
       return;
     }
     event.preventDefault();
@@ -115,25 +130,32 @@ export function DesktopShell() {
     .sort((left, right) => left.zIndex - right.zIndex);
   const visibleCount = openWindows.filter((windowState) => !windowState.isMinimized).length;
 
-  const shellStyle = {
-    "--panos-wallpaper": `url("${ASSETS.wallpaper.url}")`,
-  } as CSSProperties;
+  const wallpaper = ASSETS.wallpapers[wallpaperIndex];
 
   return (
     <main
       ref={shellRef}
       className={styles.desktopShell}
       aria-label="PanOS desktop"
-      style={shellStyle}
       onMouseMove={onShellMouseMove}
       onContextMenu={onShellContextMenu}
     >
-      <div className={styles.wallpaper} aria-hidden="true" />
+      <AnimatePresence initial={false}>
+        <motion.div
+          key={wallpaper.url}
+          className={styles.wallpaper}
+          style={{ "--panos-wallpaper": `url("${wallpaper.url}")` } as CSSProperties}
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.6, ease: "easeInOut" }}
+        />
+      </AnimatePresence>
       <div className={styles.grain} aria-hidden="true" />
       <MenuBar />
       <DesktopIcons />
       <Widgets />
-      <StickyNotes />
 
       <section className={styles.mobileHome} aria-label="PanOS apps">
         <div className={styles.mobileHomeHero}>

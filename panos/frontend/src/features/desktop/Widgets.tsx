@@ -180,9 +180,6 @@ export function Widgets() {
               return <VisitorsWidget key={widget.id} widget={widget} />;
             case "calendar":
               return <MiniCalendarWidget key={widget.id} onExpand={() => setCalendarOpen(true)} />;
-            case "sticky":
-              // 便签不进 Widget 棋盘，由 StickyNotes 贴在桌面上。
-              return null;
             default:
               // 未知类型（后台新增但前端未实现）直接跳过，不破坏桌面。
               return null;

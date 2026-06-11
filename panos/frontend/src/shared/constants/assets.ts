@@ -9,16 +9,20 @@ interface ImageAsset {
 }
 
 export interface SiteAssets {
-  wallpaper: ImageAsset;
+  wallpapers: readonly ImageAsset[];
   ogImage: string;
 }
 
+// 桌面壁纸轮播序列（15s 交叉淡入切换）。
+// 全部为印尼珀尼达岛精灵崖（Kelingking）同族风景，来源 Unsplash，免费授权。
 export const ASSETS: SiteAssets = {
-  wallpaper: {
-    // 印尼巴厘岛珀尼达岛精灵崖（Kelingking）。来源 Unsplash，免费授权。
-    url: "/wallpapers/kelingking.jpg",
-    alt: "Kelingking cliff, Nusa Penida, Indonesia",
-  },
+  wallpapers: [
+    { url: "/wallpapers/kelingking.jpg", alt: "Kelingking cliff, Nusa Penida" },
+    { url: "/wallpapers/kelingking-beach.jpg", alt: "Kelingking beach aerial" },
+    { url: "/wallpapers/kelingking-surf.jpg", alt: "Turquoise surf at Kelingking" },
+    { url: "/wallpapers/kelingking-shore.jpg", alt: "Kelingking shoreline" },
+    { url: "/wallpapers/kelingking-wave.jpg", alt: "Wave against the cliff" },
+  ],
   ogImage:
     "https://images.unsplash.com/photo-1568507058983-7e7fc6682ab8?q=80&w=1200&h=630&fit=crop",
 };
