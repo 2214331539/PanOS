@@ -11,7 +11,7 @@ import { AppWindowContent } from "./AppWindowContent";
 import { DOCK_APPS, isDockAppId } from "./config/apps";
 import type { ContextMenuPosition } from "./DesktopContextMenu";
 import { DesktopContextMenu } from "./DesktopContextMenu";
-import { DesktopIcons } from "./DesktopIcons";
+import { DesktopStream } from "./DesktopStream";
 import styles from "./DesktopShell.module.css";
 import { Dock } from "./Dock";
 import { HelpBubble } from "./HelpBubble";
@@ -154,7 +154,7 @@ export function DesktopShell() {
       </AnimatePresence>
       <div className={styles.grain} aria-hidden="true" />
       <MenuBar />
-      <DesktopIcons />
+      <DesktopStream />
       <Widgets />
 
       <section className={styles.mobileHome} aria-label="PanOS apps">

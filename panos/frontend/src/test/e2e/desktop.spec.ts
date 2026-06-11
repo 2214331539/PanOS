@@ -50,8 +50,9 @@ test("打开 Projects App 后看到项目卡片与技术栈", async ({ page, isM
 
   await openApp(page, isMobile, "Projects");
 
-  await expect(page.getByText("浏览器里的个人操作系统")).toBeVisible();
-  await expect(page.getByText("FastAPI")).toBeVisible();
+  const windowLayer = page.getByLabel("Open PanOS windows");
+  await expect(windowLayer.getByText("浏览器里的个人操作系统")).toBeVisible();
+  await expect(windowLayer.getByText("FastAPI")).toBeVisible();
 });
 
 test("Gallery 点击图片打开 Lightbox，ESC 关闭", async ({ page, isMobile }) => {
@@ -83,11 +84,18 @@ test("Links App 渲染来自 API 的社交链接", async ({ page, isMobile }) =>
   );
 });
 
-test("桌面图标双击直达最新文章", async ({ page, isMobile }) => {
-  test.skip(isMobile, "桌面图标仅桌面端展示");
+test("桌面内容流卡片点击直达文章", async ({ page, isMobile }) => {
+  test.skip(isMobile, "内容流仅桌面端展示");
   await page.goto("/");
 
-  await page.getByRole("button", { name: /文章：Agent Memory 的核心价值/ }).dblclick();
+  // 欢迎窗可能盖住内容流，先关掉；hover 流容器暂停滚动后卡片才可稳定点击。
+  await page.getByRole("button", { name: "Close Welcome to PanOS" }).click();
+  const stream = page.getByLabel("Desktop content stream");
+  await stream.hover();
+  await stream
+    .getByRole("button", { name: /文章：Agent Memory 的核心价值/ })
+    .first()
+    .click();
 
   await expect(page.getByRole("heading", { name: "Agent Memory 的核心价值" })).toBeVisible();
   await expect(page).toHaveURL(/app=articles/);
@@ -163,16 +171,18 @@ test("V2 三个 App 渲染真实内容", async ({ page, isMobile }) => {
     }
   }
 
+  const windowLayer = page.getByLabel("Open PanOS windows");
+
   await openApp(page, isMobile, "Ideas");
-  await expect(page.getByText("给 Agent 做一个遗忘曲线")).toBeVisible();
+  await expect(windowLayer.getByText("给 Agent 做一个遗忘曲线")).toBeVisible();
   await closeIfMobile("Ideas");
 
   await openApp(page, isMobile, "Research");
-  await expect(page.getByText("Agent 记忆检索策略对比")).toBeVisible();
+  await expect(windowLayer.getByText("Agent 记忆检索策略对比")).toBeVisible();
   await closeIfMobile("Research");
 
   await openApp(page, isMobile, "Timeline");
-  await expect(page.getByText("PanOS 完成 V1 全部功能")).toBeVisible();
+  await expect(windowLayer.getByText("PanOS 完成 V1 全部功能")).toBeVisible();
 });
 
 test("右下角问号悬浮球展示快捷键说明", async ({ page, isMobile }) => {

@@ -1,0 +1,144 @@
+/* 桌面右侧内容瀑布流：固定列 + 无缝向上滚动 + 上下渐隐遮罩。 */
+.stream {
+  position: fixed;
+  z-index: 20;
+  top: 44px;
+  right: 18px;
+  bottom: 104px;
+  width: 248px;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 36px,
+    #000 calc(100% - 36px),
+    transparent 100%
+  );
+}
+
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: stream-scroll 48s linear infinite;
+  will-change: transform;
+}
+
+/* hover 暂停，方便阅读与点击。 */
+.stream:hover .track {
+  animation-play-state: paused;
+}
+
+@keyframes stream-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    /* 列表复制了一份，滚过一半正好无缝回到起点。 */
+    transform: translateY(calc(-50% - 5px));
+  }
+}
+
+.card {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  box-shadow:
+    0 6px 20px rgb(15 23 42 / 14%),
+    inset 0 1px 0 var(--glass-highlight);
+  cursor: pointer;
+  padding: 12px 13px;
+  text-align: left;
+  backdrop-filter: blur(20px) saturate(180%);
+  transition:
+    transform 140ms ease-out,
+    border-color 140ms ease-out;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--glass-border));
+  transform: translateX(-4px);
+}
+
+.cardHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.article .cardHead {
+  color: color-mix(in srgb, var(--primary) 88%, var(--text));
+}
+
+.idea .cardHead {
+  color: color-mix(in srgb, var(--warning) 80%, var(--text));
+}
+
+.project .cardHead {
+  color: color-mix(in srgb, var(--success) 80%, var(--text));
+}
+
+.photo .cardHead {
+  color: color-mix(in srgb, var(--danger) 82%, var(--text));
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.cardBody {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.photoImg {
+  width: 100%;
+  height: 104px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 减弱动态：不自动滚动，改为可手动滚动的静态列。 */
+  .track {
+    animation: none;
+  }
+
+  .stream {
+    overflow-y: auto;
+    mask-image: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .stream {
+    width: 216px;
+  }
+}
+
+@media (max-width: 767px) {
+  /* 移动端主屏已有内容网格。 */
+  .stream {
+    display: none;
+  }
+}
